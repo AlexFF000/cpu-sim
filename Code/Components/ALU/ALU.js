@@ -15,14 +15,17 @@ function splitNumbers(val1, val2){
     var arr = []
     for(i=0, i < tmp.length, i++){
       arr.push(number(tmp[0]))
-      
+      tmp.splice(0)
+      return arr
+
     }
 
   }
   var tmp = val1.toString().split("")
+  numList1 = backToNum(tmp)
 
-
-  valList2 = val2.toString().split("")
+  tmp = val2.toString().split("")
+  numList2 = backToNum(tmp)
 }
 
 function add(val1, val2){
@@ -31,10 +34,11 @@ function add(val1, val2){
 }
 
 function sub(val1, val2){
-
+  return val1 - val2
 }
 
 
 function AND(val1, val2){
-
+  splitNumbers(val1, val2)
+  
 }
