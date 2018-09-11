@@ -1,159 +1,125 @@
 //Arithmetic Logic Unit Simulator
 
 
-function checkTypes(val1, val2){
-  // Check values are numerical and binary
-  if (val1 !== 0 || val1 !== 1 || val2 !== 0 || val2 !== 1){
-    // Report error
-  }
-  }
-
-
-function splitNumbers(val1, val2){
-  console.log("Splitting number into list");
-  // Split values into arrays of indvidual digits
-  function backToNum(tmp){
-    // Convert array of strings back to numbers
-    console.log("Turning strings to numbers");
-    console.dir(tmp);
-    var arr = [];
-    for(i=0; i < tmp.length; i++){
-      arr.push(Number(tmp[0]));
-      tmp.splice(0);
-      console.log("Strings are now numbers");
-      console.dir(arr);
-      return arr;
-
-    }
-
-  }
-  var tmp = val1.toString().split("");
-  console.log("Splitting strings");
-  var numList1 = backToNum(tmp);
-
-  tmp = val2.toString().split("");
-  var numList2 = backToNum(tmp);
-
-  var numList = [numList1, numList2];
-  console.dir(numList1);
-  return numList;
-}
-
-function toNumber(arry){
-  // Convert array back to number
-  console.log("Returning array to number")
-  arry = arry.join();
-  arry.replace(/'/g, "");
-  arry.replace(/,/g, "");
-  arry = Number(arry)
-  console.log("Returning number")
-  return arry;
-}
 
 function add(val1, val2){
-  checkTypes(val1, val2);
-  // add values
-  numList = splitNumbers(val1, val2);
+  var len = val1.length;
   var outList = [];
-  for (i=0; i < numlist[0].length; i++){
-    outList.push(numList[0][0] + numList[1][0]);
-    numList[0].splice(0);
-    numList[1].splice(0);
-}
-  return toNumber(outList);
-}
+  var carry = 0;
+  for (i = 0; i < val1.length; i++){
+    console.log("loop");
+    var sum = val1[len - 1] + val2[len - 1] + carry;
+    if (sum == 0){
+      outList.unshift(0);
+      carry = 0;
+      console.log("o0, c0")
+    }
+    else if (sum == 1){
+      outList.unshift(1);
+      carry = 0;
+      console.log("o1, c0")
+      }
+    else if (sum > 1){
+      outList.unshift(0)
+      carry = 1;
+      console.log("o0, c1")
+    }
+    len--;
+    console.log(JSON.stringify(len));
+    if (carry == 1 && len == 0){
+      console.log("len is 0, but there is another carry")
+      outList.unshift(1);
+    }
+    console.log(JSON.stringify(outList))
+    }
+    return outList;
+    }
+
+
 
 
 
 function sub(val1, val2){
 checkTypes(val1, val2);
   // Subtract values
-  numList = splitNumbers(val1, val2);
+  numList = [val1, val2];
   var outList = [];
   for (i=0; i < numlist[0].length; i++){
     outList.push(numList[0][0] - numList[1][0]);
     numList[0].splice(0);
     numList[1].splice(0);
 }
-  return toNumber(outList);
+  return outList;
 }
 
 function AND(val1, val2){
   checkTypes(val1, val2);
   // Bitwise AND
-  var numList = splitNumbers(val1, val2);
   var outList = [];
-  for (i=0; i < numlist[0].length; i++){
-    if (numList[0][0] == numList[1][0]){
+  for (i=0; i < val1.length; i++){
+    if ((val1[i] + val2[i]) == 2){
       outList.push(1);
     }
     else{
       outList.push(0);
     }
-    numList[0].splice(0);
-    numList[1].splice(0);
   }
-  return toNumber(outList);
+  return outList;
 
 }
 
 function OR(val1, val2){
   checkTypes(val1, val2);
   // Bitwise OR
-  var numList = splitNumbers(val1, val2);
   var outList = [];
-  for (i=0; i < numlist[0].length; i++){
-    if (numList[0][0] == 1){
+  for (i=0; i < val1.length; i++){
+    if (val1[i] == 1){
       outList.push(1);
     }
-    else if (numlist[1][0] == 1) {
+    else if (val2[i] == 1) {
         outList.push(1);
     }
     else {
       outList.push(0);
     }
-    numList[0].splice(0);
-    numList[1].splice(0);
+
 }
-return toNumber(outList);
+return outList;
 }
 
 
 function XOR(val1, val2){
   checkTypes(val1, val2);
   // Bitwise XOR
-  var numList = splitNumbers(val1, val2);
   var outList = [];
-  for (i=0; i < numlist[0].length; i++){
-    if ((numList[0][0] + numList[1][0]) == 1){
+  for (i = 0; i < val1.length; i++){
+    if ((val1[i] + val2[i]) == 1){
       outList.push(1);
     }
     else {
       outList.push(0);
     }
-    numList[0].splice(0);
-    numList[1].splice(0);
-    }
-    return toNumber(outList);
-    }
+  }
+  return outList;
+}
 
 function NOT(val1){
   console.log("Starting NOT function");
   checkTypes(val1, 0);
   // Bitwise NOT
-  var numList = splitNumbers(val1, 0);
-  var outList = []
-  for (i=0; i < numList[0].length; i++){
-    if (numList[0][0] == 0){
+  var outList = [];
+  for (i=0; i < val1.length; i++){
+    if (val1[i] == 0){
       outList.push(1);
     }
     else{
       outList.push(0);
     }
-    numList[0].splice(0)
+
   }
   console.log("returning number");
-  console.log(outList);
-  return toNumber(outList);
+  console.log(JSON.stringify(outList));
+  return outList;
   }
-splitNumbers(0110, 1001);
+
+console.log(JSON.stringify(add([1,0,0,1,1], [1,0,0,1,0])));
