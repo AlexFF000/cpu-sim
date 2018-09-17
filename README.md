@@ -4,7 +4,7 @@ Copyright Alex Redmond (All rights reserved)
 
 Instruction Set:
 
-The processor receives 16 bit instructions in the following format:
+The processor receives 14 bit instructions in the following format:
 0000|00|00000000
 first 4 bits = opcode; next 2 bits = addressing mode; final 8 bits = operand
 
