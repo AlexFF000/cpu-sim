@@ -14,6 +14,9 @@ var commands = {
   1000: clear(),
   1001: output()
 }
+var opcode;
+var mode;
+var operand;
 
 var queue = []; // Points to functions for each command
 var acc = registers.ACC;
@@ -130,6 +133,45 @@ function fetch(){
     busGrant(),
     buses.DATABUS = MDR,
     registers.update(CIR)
+  ]
+
+
+}
+
+function decode(){
+  function getOperand(){
+    if (mode == "01"){ // Operand is memory address, actual data must be fetched
+      queue = [
+        buses.MAR = operand,
+        memory.getAddress(),
+        buses.dataRequest(),
+        busGrant(),
+        memory.outputData(),
+      ]
+
+  }
+  else{
+    queue = [ // Operand is the data to be operated on
+      buses.dataRequest(),
+      busGrant(),
+      buses.DATABUS = operand
+    ]
+  }
+  queue = [
+    registers.update(MDR)
+  ]
+  }
+  queue = [
+    opcode = registers.CIR.slice(0, 4).join(""),
+    mode = registers.CIR.slice(4, 6).join(""),
+    operand = registers.CIR.slice(6, 15),
+
+
+
+
+
+
+    
   ]
 }
 

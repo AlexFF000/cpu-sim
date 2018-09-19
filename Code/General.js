@@ -31,7 +31,7 @@ function splitNumbers(val1, val2){
   return numList;
 }
 
-function toString(arry){
+function tString(arry){
   // Convert array back to number
   console.log("Returning array to number")
   arry = arry.join();

@@ -1,3 +1,4 @@
+import * as buses from 'buses.js';
 function init(){
   var RAM = [];
   for (i = 0; i < 256; i++){
@@ -7,18 +8,16 @@ function init(){
 }
 
 function getAddress(){
-  var location = ADDRESSBUS.toString();
-  address = ram[location];
+  let location = buses.ADDRESSBUS.join("");
+  location = parseInt(location, 2);
+  address = RAM[location];
 }
 
 function outputData(){
-  for (i = 0; i < 8; i++){
-    DATABUS[i] = address[i];
-  }
+    buses.DATABUS = address;
+
 }
 
 function writeData(){
-  for (i = 0; i < 8; i++){
-    address[i] = DATABUS[i];
-  }
+    address = buses.DATABUS;
 }
