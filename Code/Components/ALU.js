@@ -1,9 +1,9 @@
 //Arithmetic Logic Unit Simulator
 import * as buses from "buses.js";
 
-outList = [];
-val1 = [];
-val2 = [];
+var outList = [];
+var val1 = [];
+var val2 = [];
 function getVal(value){
   if (value == 1){
     val1 = buses.DATABUS;
@@ -16,7 +16,7 @@ function getVal(value){
 
 function add(){
   var len = val1.length;
-  // var outList = [];
+  outList = [];
   var carry = 0;
   for (i = 0; i < val1.length; i++){
     console.log("loop");
@@ -51,11 +51,11 @@ function add(){
 
 
 
-function sub(val1, val2){
+function sub(){
 checkTypes(val1, val2);
   // Subtract values
   numList = [val1, val2];
-  // var outList = [];
+  outList = [];
   for (i=0; i < numlist[0].length; i++){
     outList.push(numList[0][0] - numList[1][0]);
     numList[0].splice(0);
@@ -67,7 +67,7 @@ checkTypes(val1, val2);
 function AND(val1, val2){
   checkTypes(val1, val2);
   // Bitwise AND
-  // var outList = [];
+  outList = [];
   for (i=0; i < val1.length; i++){
     if ((val1[i] + val2[i]) == 2){
       outList.push(1);
@@ -83,7 +83,7 @@ function AND(val1, val2){
 function OR(val1, val2){
   checkTypes(val1, val2);
   // Bitwise OR
-  // var outList = [];
+  outList = [];
   for (i=0; i < val1.length; i++){
     if (val1[i] == 1){
       outList.push(1);
@@ -103,7 +103,7 @@ return outList;
 function XOR(val1, val2){
   checkTypes(val1, val2);
   // Bitwise XOR
-  // var outList = [];
+  outList = [];
   for (i = 0; i < val1.length; i++){
     if ((val1[i] + val2[i]) == 1){
       outList.push(1);
@@ -117,9 +117,8 @@ function XOR(val1, val2){
 
 function NOT(val1){
   console.log("Starting NOT function");
-  checkTypes(val1, 0);
   // Bitwise NOT
-  // var outList = [];
+  outList = [];
   for (i=0; i < val1.length; i++){
     if (val1[i] == 0){
       outList.push(1);
@@ -133,5 +132,7 @@ function NOT(val1){
   console.log(JSON.stringify(outList));
   return outList;
   }
+
+
 
 console.log(JSON.stringify(add([1,0,0,1,1], [1,0,0,1,0])));
