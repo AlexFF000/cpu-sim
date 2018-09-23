@@ -1,20 +1,20 @@
 //Arithmetic Logic Unit Simulator
-import * as buses from "buses.js";
+
 
 var outList = [];
 var val1 = [];
 var val2 = [];
 function getVal(value){
   if (value == 1){
-    val1 = buses.DATABUS;
+    val1 = DATABUS;
   }
   else if (value == 2){
-    val2 = buses.DATABUS;
+    val2 = DATABUS;
   }
 }
 
 
-function add(){
+function addition(){
   var len = val1.length;
   outList = [];
   var carry = 0;
@@ -64,7 +64,7 @@ checkTypes(val1, val2);
   return outList;
 }
 
-function AND(val1, val2){
+function and(val1, val2){
   checkTypes(val1, val2);
   // Bitwise AND
   outList = [];
@@ -80,7 +80,7 @@ function AND(val1, val2){
 
 }
 
-function OR(val1, val2){
+function or(val1, val2){
   checkTypes(val1, val2);
   // Bitwise OR
   outList = [];
@@ -100,7 +100,7 @@ return outList;
 }
 
 
-function XOR(val1, val2){
+function xor(val1, val2){
   checkTypes(val1, val2);
   // Bitwise XOR
   outList = [];
@@ -115,7 +115,7 @@ function XOR(val1, val2){
   return outList;
 }
 
-function NOT(val1){
+function not(val1){
   console.log("Starting NOT function");
   // Bitwise NOT
   outList = [];
@@ -132,7 +132,3 @@ function NOT(val1){
   console.log(JSON.stringify(outList));
   return outList;
   }
-
-
-
-console.log(JSON.stringify(add([1,0,0,1,1], [1,0,0,1,0])));

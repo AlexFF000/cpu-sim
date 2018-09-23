@@ -1,5 +1,10 @@
-import * as buses from "buses.js";
-function init(){
+var PC;
+var CIR;
+var MAR;
+var MDR;
+var ACC;
+var cirarray = [];
+function initReg(){
   PC = [0,0,0,0,0,0,0,0];
   CIR = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   MAR = [0,0,0,0,0,0,0,0];
@@ -8,12 +13,31 @@ function init(){
 }
 
 function update(register){
-  register = buses.DATABUS;
+  register = DATABUS;
 }
 
-function incrementPC(){
-  var val1 = PC;
-  var val2 = [0,0,0,0,0,0,0,1]
+function cirUpdate(part){
+
+  if (part == 1){
+    cirarray = DATABUS;
+  }
+  else if (part == 2){
+    for (i = 2; i < 8; i++){
+      cirarray.push(DATABUS[i]) // Push last 6 bits from DB to cirarray
+    }
+    CIR = cirarray
+  }
+}
+
+function increment(reg){
+  if (reg == PC){
+    var val1 = PC;
+    var val2 = [0,0,0,0,0,0,1,0];
+  }
+  else if (reg == MAR){
+    var val1 = MAR;
+    var val2 = [0,0,0,0,0,0,0,1];
+  }
   var outList = [];
   var carry = 0;
   len = 8;
@@ -36,6 +60,10 @@ function incrementPC(){
       outList.unshift(1);
     }
     }
-    PC = outList;
-
+    if (reg == PC){
+      PC = outList;
+  }
+    else if (reg == MAR){
+      MAR = outList;
+  }
 }

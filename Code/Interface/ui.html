@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+<head>
+  <script src="ui.js"></script>
+  <script src="../Components/CU.js"></script>
+  <script src="../Components/buses.js"></script>
+  <script src="../Components/memory.js"></script>
+  <script src="../Components/registers.js"></script>
+  <script src="../Components/ALU.js"></script>
+</head>
+<body>
+  <p1>You have disabled CORS in firefox, because it blocks Javascript imports, you will need to find a workaround before releasing</p1>
+  <br>
+  <textarea id="instructions" rows="20"></textarea>
+  <button name="load" value="start" onclick="start()"></button>
+  <p>Program Counter</p>
+  <input id="PCbox" type="text" maxlength="8" readonly="true" />
+  <p>Memory address register</p>
+  <input id="MARbox" type="text" maxlength="8" readonly="true" />
+  <p>Memory data register</p>
+  <input id="MDRbox" type="text" maxlength="8" readonly="true" />
+  <p>Accumulator</p>
+  <input id="ACCbox" type="text" maxlength="8" readonly="true" />
+  <p>Current Instruction Register</p>
+  <input id="CIRbox" type="text" maxlength="14" readonly="true" />
+  <br>
+  <br>
+  <p>Address bus</p>
+  <input id="addressBox" type="text" readonly="true" />
+  <p>Data bus</p>
+  <input id="dataBox" type="text" readonly="true" />
+
+
+  <table width="50%" border="1" id="memTable">
+  <caption>
+    Memory
+  </caption>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+  <tr>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+    <td>00000000</td>
+  </tr>
+</table>
+</body>

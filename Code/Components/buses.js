@@ -1,5 +1,8 @@
-function init(){
-    var CONTROLBUS = {
+var CONTROLBUS;
+var ADDRESSBUS;
+var DATABUS;
+function initBus(){
+    CONTROLBUS = {
       "request": 0,
       "grant": 0,
       "write": 0,

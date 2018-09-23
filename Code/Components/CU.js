@@ -1,23 +1,5 @@
-import * as buses from "buses.js";
-import * as memory from "memory.js";
-import * as alu from "ALU.js";
-import * as registers from "registers.js";
-var commands = [
-   add(),
-   sub(),
-   and(),
-   or(),
-   not(),
-   read(),
-   write(),
-   goto(),
-   goto_ifPos(),
-   goto_ifNeg(),
-   goto_ifZero(),
-   clear(), // Useless, remove
-   output(),
-   end()
-]
+
+var commands;
 var opcode;
 var mode;
 var operand;
@@ -28,125 +10,154 @@ var subqueue = []; // Merges into queue to add next instruction
 
 
 function control(instructions, frequency){ // Recieve instructions, load into memory, start simulation
-  registers.init();
-  buses.init();
-  memory.init();
+  initMem();
+  initBus();
+  initReg();
+  commands = [
+     add,
+     sub,
+     bitwiseAnd,
+     bitwiseOr,
+     bitwiseXor,
+     bitwiseNot,
+     read,
+     write,
+     goto,
+     goto_ifPos,
+     goto_ifNeg,
+     goto_ifZero,
+     clear, // Useless, remove
+     output,
+     end
+  ]
+  var x = 0;  // Instructions are 14 bits long but RAM supports only 8 bits
   for (i = 0; i < instructions.length; i++){
-    memory.RAM[i] = instructions[i];
+    RAM[x] = instructions[i].slice(0, 9); // Instructions are split into two parts
+    memUpdate(x)
+    x++;
+    let tmp = [0, 0];
+    tmp = tmp.concat(instructions[i].slice(8, 15)) // With two zeroes added to the second (6 bit) part to make 8 bits
+    RAM[x] = tmp;  // Then placed into two consecutive memory addresses
+    memUpdate(x); // Update memory UI
+    x++;
   }
-  queue.push(fetch());
+  queue.push("fetch()");
   clock(frequency);
 }
 
-function add(mode, operand){
+function add(){
     subqueue = [
-      buses.dataRequest(),
-      busGrant(),
-      buses.DATABUS = operand,
-      alu.getVal(1),
-      buses.dataRequest(),
-      busGrant(),
-      buses.DATABUS = registers.ACC,
-      alu.add(),
-      buses.dataRequest(),
-      busGrant(),
-      buses.DATABUS = ALU.outList,
-      registers.update(ACC)
+      "dataRequest()",
+      "busGrant()",
+      "DATABUS = operand",
+      "getVal(1)",
+      "dataRequest()",
+      "busGrant()",
+      "DATABUS = ACC",
+      "addition()",
+      "dataRequest()",
+      "busGrant()",
+      "DATABUS = outList",
+      "update(ACC)"
     ]
 
   }
 
 
 function sub(mode, operand){
-  
+
 }
 
-function and(mode, operand){
+function bitwiseAnd(){
   subqueue = [
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = registers.MDR,
-    alu.getVal(1),
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = registers.ACC,
-    alu.getVal(2),
-    alu.and(),
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = alu.outList,
-    registers.update(ACC)
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = MDR",
+    "getVal(1)",
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = ACC",
+    "getVal(2)",
+    "and()",
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = outList",
+    "update(ACC)"
 
   ]
 }
 
-function or(mode, operand){
+function bitwiseOr(){
   subqueue = [
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = registers.MDR,
-    alu.getVal(1),
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = registers.ACC,
-    alu.getVal(2),
-    alu.or(),
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = alu.outList,
-    registers.update(ACC)
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = MDR",
+    "getVal(1)",
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = ACC",
+    "getVal(2)",
+    "or()",
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = outList",
+    "update(ACC)"
   ]
 }
 
-function not(){
+function bitwiseNot(){
   subqueue = [
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = registers.MDR,
-    alu.getVal(1),
-    alu.not(),
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = alu.outList,
-    registers.update(ACC),
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = ACC",
+    "getVal(1)",
+    "not()",
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = outList",
+    "update(ACC)",
   ]
+}
+
+function bitwiseXor(){
+
 }
 
 function read(operand){
 
     // Request bus permissions, put on address bus, get operand from memory, perms, data on data bus, put into accumulator
     subqueue =[
-      buses.ADDRESSBUS = registers.MDR,
-      memory.getAddress(),
-      buses.dataRequest(),
-      busGrant(),
-      memory.outputData(),
-      registers.update(ACC)
+      "ADDRESSBUS = MDR",
+      "getAddress()",
+      "dataRequest()",
+      "busGrant()",
+      "outputData()",
+      "update(ACC)"
     ]
 }
 
 function write(operand){
     // Request bus permissions, put on address bus, get data from accumulator, perms, data on data bus, write to memory
     subqueue = [
-      buses.ADDRESSBUS = register.MDR,
-      memory.getAddress(),
-      buses.dataRequest(),
-      busGrant(),
-      memory.writeData()
+      "ADDRESSBUS = MDR",
+      "getAddress()",
+      "dataRequest()",
+      "busGrant()",
+      "writeData()"
     ]
 }
 
 function goto(mode, operand){
   subqueue = [
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = registers.MDR,
-    registers.update(PC)
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = MDR",
+    "update(PC)"
   ]
 }
 
 function goto_ifPos(mode, operand){
-  var accContents = registers.ACC.join("");
+  var accContents = ACC.join("");
   accContents = parseInt(accContents, 2);
   if (accContents >= 0){
     goto()
@@ -154,7 +165,7 @@ function goto_ifPos(mode, operand){
 }
 
 function goto_ifNeg(mode, operand){
-  var accContents = registers.ACC.join("");
+  var accContents = ACC.join("");
   accContents = parseInt(accContents, 2); // May not work if twos complement
   if (accContents < 0){
     goto();
@@ -162,7 +173,7 @@ function goto_ifNeg(mode, operand){
 }
 
 function goto_ifZero(mode, operand){
-  var accContents = registers.ACC.join("");
+  var accContents = ACC.join("");
   accContents = parseInt(accContents, 2);
   if (accContents == 0){
     goto();
@@ -186,72 +197,101 @@ function end(){
 }
 
 function busGrant(){
-  buses.CONTROLBUS.grant = 1;
-  buses.CONTROLBUS.request = 0;
+  CONTROLBUS.grant = 1;
+  CONTROLBUS.request = 0;
 }
 
 function fetch(){
-  subqueue = [
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = registers.PC,
-    registers.update(MAR),
-    buses.ADDRESSBUS = MAR,
-    memory.getAddress(),
-    buses.dataRequest(),
-    busGrant(),
-    memory.outputData(),
-    registers.update(MDR),
-    registers.incrementPC(),
-    buses.dataRequest(),
-    busGrant(),
-    buses.DATABUS = MDR,
-    registers.update(CIR),
-    decode()
+  subqueue = [ // Get data pt1 from ram > cirupdate > data pt2 from ram > decode()
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = PC",
+    "update(MAR)",
+    "ADDRESSBUS = MAR",
+    "getAddress()",
+    "dataRequest()",
+    "busGrant()",
+    "outputData()",
+    "update(MDR)",
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = MDR",
+    "cirUpdate(1)",
+    "increment(MAR)",
+    "ADDRESSBUS = MAR",
+    "getAddress()",
+    "outputData()",
+    "cirUpdate(2)",
+    "increment(PC)",
+    "decode()"
   ]
   queue = queue.concat(subqueue);
 
+}
+
+function getOperand(){ // Potential scope issues (will be run by clock, is part of decode)
+  if (mode == "01"){ // Operand is memory address, actual data must be fetched
+    subqueue = [
+      "MAR = operand",
+      "getAddress()",
+      "dataRequest()",
+      "busGrant()",
+      "outputData()",
+      "update(MDR)"
+    ]
+
+}
+else{
+  subqueue = [ // Operand is the data to be operated on
+    "dataRequest()",
+    "busGrant()",
+    "DATABUS = operand",
+    "update(MDR)"
+  ]
+}
+// subqueue.push(update(MDR)) Will execute before above statements, seems useless
+queue = queue.concat(subqueue);
 }
 
 function decode(){
   function getOperand(){ // Potential scope issues (will be run by clock, is part of decode)
     if (mode == "01"){ // Operand is memory address, actual data must be fetched
       subqueue = [
-        buses.MAR = operand,
-        memory.getAddress(),
-        buses.dataRequest(),
-        busGrant(),
-        memory.outputData(),
-        registers.update(MDR)
+        "MAR = operand",
+        "getAddress()",
+        "dataRequest()",
+        "busGrant()",
+        "outputData()",
+        "update(MDR)"
       ]
 
   }
   else{
     subqueue = [ // Operand is the data to be operated on
-      buses.dataRequest(),
-      busGrant(),
-      buses.DATABUS = operand,
-      registers.update(MDR)
+      "dataRequest()",
+      "busGrant()",
+      "DATABUS = operand",
+      "update(MDR)"
     ]
   }
-  subqueue.push(registers.update(MDR))
+  // subqueue.push(update(MDR)) Will execute before above statements, seems useless
   queue = queue.concat(subqueue);
   }
   subqueue = [
-    opcode = registers.CIR.slice(0, 4).join(""),
-    mode = registers.CIR.slice(4, 6).join(""),
-    operand = registers.CIR.slice(6, 15),
-    getOperand(),
-    execute()
+    'opcode = CIR.slice(0, 4).join("")',
+    'mode = CIR.slice(4, 6).join("")',
+    'operand = CIR.slice(6, 15)',
+    'getOperand()',
+    'execute()'
   ]
   queue = queue.concat(subqueue);
 }
 
 function execute(){
-    operand = parseInt(operand.join(""), 2);
-    commands[operand]();
+    opcode = parseInt(opcode, 2);
+    commands[opcode]();
     queue = queue.concat(subqueue);
-    queue.push(fetch());
+    queue.push("fetch()");
 
 
 }
@@ -259,11 +299,12 @@ function execute(){
 function clock(frequency){
   function runProcesses(){
     function clockOff(){
-      buses.CONTROLBUS.clock = 0;
+      CONTROLBUS.clock = 0;
     }
-    buses.CONTROLBUS.clock = 1;
+    CONTROLBUS.clock = 1;
     eval(queue[0]);
     queue.shift();
+    uiUpdate();
     setTimeout(clockOff, frequency);
   }
   ticks = setInterval(runProcesses, frequency); // Must be pausable
