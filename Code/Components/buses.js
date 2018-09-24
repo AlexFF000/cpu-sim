@@ -1,6 +1,6 @@
 var CONTROLBUS;
-var ADDRESSBUS;
-var DATABUS;
+var ADDRESSBUS = [];
+var DATABUS = [];
 function initBus(){
     CONTROLBUS = {
       "request": 0,
@@ -21,4 +21,5 @@ function interruptRequest(){
 
 function dataRequest(){
   CONTROLBUS.request = 1;
+  reporting("Requesting use of data bus");
 }

@@ -15,6 +15,7 @@ function getVal(value){
 
 
 function addition(){
+  reporting("Beginning addition");
   var len = val1.length;
   outList = [];
   var carry = 0;
@@ -42,6 +43,7 @@ function addition(){
       console.log("len is 0, but there is another carry")
       outList.unshift(1);
     }
+    reporting("Added")
     console.log(JSON.stringify(outList))
     }
     return outList;

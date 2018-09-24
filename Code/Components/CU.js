@@ -199,6 +199,7 @@ function end(){
 function busGrant(){
   CONTROLBUS.grant = 1;
   CONTROLBUS.request = 0;
+  reporting("Granted use of data bus");
 }
 
 function fetch(){
