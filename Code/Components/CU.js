@@ -30,9 +30,10 @@ function control(instructions, frequency){ // Recieve instructions, load into me
      output,
      end
   ]
+  reporting("Loading instructions into memory");
   var x = 0;  // Instructions are 14 bits long but RAM supports only 8 bits
   for (i = 0; i < instructions.length; i++){
-    RAM[x] = instructions[i].slice(0, 9); // Instructions are split into two parts
+    RAM[x] = instructions[i].slice(0, 8); // Instructions are split into two parts
     memUpdate(x)
     x++;
     let tmp = [0, 0];

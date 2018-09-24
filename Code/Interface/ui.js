@@ -30,5 +30,6 @@ function uiUpdate(){
 function memUpdate(addr){
   let row = parseInt(addr / 16);
   let col = addr % 16;
-  memUi[row].cells[col].innerHtml = RAM[addr];
+  let table = memUi[row].cells;
+  table[col].innerHTML = RAM[addr].join("");
 }
