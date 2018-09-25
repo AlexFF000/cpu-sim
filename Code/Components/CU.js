@@ -55,6 +55,7 @@ function add(){
       "dataRequest()",
       "busGrant()",
       "DATABUS = ACC",
+      "getVal(2)",
       "addition()",
       "dataRequest()",
       "busGrant()",
@@ -251,7 +252,7 @@ else{
     "update(MDR)"
   ]
 }
-// subqueue.push(update(MDR)) Will execute before above statements, seems useless
+subqueue.push("execute()");
 queue = queue.concat(subqueue);
 }
 
@@ -283,8 +284,7 @@ function decode(){
     'opcode = CIR.slice(0, 4).join("")',
     'mode = CIR.slice(4, 6).join("")',
     'operand = CIR.slice(6, 15)',
-    'getOperand()',
-    'execute()'
+    'getOperand()', // Being done in wrong order, must be placed before execute
   ]
   queue = queue.concat(subqueue);
 }

@@ -13,7 +13,9 @@ function initReg(){
 }
 
 function update(register){
-  register = DATABUS;
+  for (i = 0; i < 8; i++){
+    register[i] = DATABUS[i];
+  }
 }
 
 function cirUpdate(part){
@@ -23,9 +25,9 @@ function cirUpdate(part){
   }
   else if (part == 2){
     for (i = 2; i < 8; i++){
-      cirarray.push(DATABUS[i]) // Push last 6 bits from DB to cirarray
+      cirarray.push(DATABUS[i]); // Push last 6 bits from DB to cirarray // Here is the culprit!!! Databus is just a reference to MDR
     }
-    CIR = cirarray
+    CIR = cirarray; // MDR gets updated as well (nvm it gets updated before this)
   }
 }
 
