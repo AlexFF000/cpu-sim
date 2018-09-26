@@ -50,16 +50,16 @@ function add(){
     subqueue = [
       "dataRequest()",
       "busGrant()",
-      "DATABUS = operand",
+      "updateBus(DATABUS, operand)",
       "getVal(1)",
       "dataRequest()",
       "busGrant()",
-      "DATABUS = ACC",
+      "updateBus(DATABUS, ACC)",  // PAss by reference changes val1 to acc
       "getVal(2)",
       "addition()",
       "dataRequest()",
       "busGrant()",
-      "DATABUS = outList",
+      "updateBus(DATABUS, outList)",
       "update(ACC)"
     ]
 
@@ -74,16 +74,16 @@ function bitwiseAnd(){
   subqueue = [
     "dataRequest()",
     "busGrant()",
-    "DATABUS = MDR",
+    "updateBus(DATABUS, MDR)",
     "getVal(1)",
     "dataRequest()",
     "busGrant()",
-    "DATABUS = ACC",
+    "updateBus(DATABUS, ACC)",
     "getVal(2)",
     "and()",
     "dataRequest()",
     "busGrant()",
-    "DATABUS = outList",
+    "updateBus(DATABUS, outList)",
     "update(ACC)"
 
   ]
@@ -93,16 +93,16 @@ function bitwiseOr(){
   subqueue = [
     "dataRequest()",
     "busGrant()",
-    "DATABUS = MDR",
+    "updateBus(DATABUS, MDR)",
     "getVal(1)",
     "dataRequest()",
     "busGrant()",
-    "DATABUS = ACC",
+    "updateBus(DATABUS, ACC)",
     "getVal(2)",
     "or()",
     "dataRequest()",
     "busGrant()",
-    "DATABUS = outList",
+    "updateBus(DATABUS, outList)",
     "update(ACC)"
   ]
 }
@@ -111,12 +111,12 @@ function bitwiseNot(){
   subqueue = [
     "dataRequest()",
     "busGrant()",
-    "DATABUS = ACC",
+    "updateBus(DATABUS, ACC)",
     "getVal(1)",
     "not()",
     "dataRequest()",
     "busGrant()",
-    "DATABUS = outList",
+    "updateBus(DATABUS, outList)",
     "update(ACC)",
   ]
 }
@@ -129,7 +129,7 @@ function read(operand){
 
     // Request bus permissions, put on address bus, get operand from memory, perms, data on data bus, put into accumulator
     subqueue =[
-      "ADDRESSBUS = MDR",
+      "updateBus(ADDRESSBUS, MDR)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
@@ -141,7 +141,7 @@ function read(operand){
 function write(operand){
     // Request bus permissions, put on address bus, get data from accumulator, perms, data on data bus, write to memory
     subqueue = [
-      "ADDRESSBUS = MDR",
+      "updateBus(ADDRESSBUS, MDR)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
@@ -153,7 +153,7 @@ function goto(mode, operand){
   subqueue = [
     "dataRequest()",
     "busGrant()",
-    "DATABUS = MDR",
+    "updateBus(DATABUS, MDR)",
     "update(PC)"
   ]
 }
@@ -208,9 +208,9 @@ function fetch(){
   subqueue = [ // Get data pt1 from ram > cirupdate > data pt2 from ram > decode()
     "dataRequest()",
     "busGrant()",
-    "DATABUS = PC",
+    "updateBus(DATABUS, PC)",
     "update(MAR)",
-    "ADDRESSBUS = MAR",
+    "updateBus(ADDRESSBUS, MAR)",
     "getAddress()",
     "dataRequest()",
     "busGrant()",
@@ -218,10 +218,10 @@ function fetch(){
     "update(MDR)",
     "dataRequest()",
     "busGrant()",
-    "DATABUS = MDR",
+    "updateBus(DATABUS, MDR)",
     "cirUpdate(1)",
     "increment(MAR)",
-    "ADDRESSBUS = MAR",
+    "updateBus(ADDRESSBUS, MAR)",
     "getAddress()",
     "outputData()",
     "cirUpdate(2)",
@@ -235,7 +235,7 @@ function fetch(){
 function getOperand(){ // Potential scope issues (will be run by clock, is part of decode)
   if (mode == "01"){ // Operand is memory address, actual data must be fetched
     subqueue = [
-      "MAR = operand",
+      "updateBus(MAR, operand)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
@@ -248,7 +248,7 @@ else{
   subqueue = [ // Operand is the data to be operated on
     "dataRequest()",
     "busGrant()",
-    "DATABUS = operand",
+    "updateBus(DATABUS, operand)",
     "update(MDR)"
   ]
 }
@@ -260,7 +260,7 @@ function decode(){
   function getOperand(){ // Potential scope issues (will be run by clock, is part of decode)
     if (mode == "01"){ // Operand is memory address, actual data must be fetched
       subqueue = [
-        "MAR = operand",
+        "updateBus(MAR, operand)",
         "getAddress()",
         "dataRequest()",
         "busGrant()",
@@ -273,7 +273,7 @@ function decode(){
     subqueue = [ // Operand is the data to be operated on
       "dataRequest()",
       "busGrant()",
-      "DATABUS = operand",
+      "updateBus(DATABUS, operand)",
       "update(MDR)"
     ]
   }
@@ -283,7 +283,7 @@ function decode(){
   subqueue = [
     'opcode = CIR.slice(0, 4).join("")',
     'mode = CIR.slice(4, 6).join("")',
-    'operand = CIR.slice(6, 15)',
+    'operand = CIR.slice(6, 14)',
     'getOperand()', // Being done in wrong order, must be placed before execute
   ]
   queue = queue.concat(subqueue);

@@ -23,3 +23,9 @@ function dataRequest(){
   CONTROLBUS.request = 1;
   reporting("Requesting use of data bus");
 }
+
+function updateBus(bus, register){
+  for (i = 0; i < register.length; i++){
+    bus[i] = register[i];
+  }
+}

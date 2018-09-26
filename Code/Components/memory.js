@@ -16,11 +16,12 @@ function getAddress(){
 }
 
 function outputData(){
-    DATABUS = address;
+    updateBus(DATABUS, address);
 
 }
 
 function writeData(){
-    address = DATABUS;
+    updateBus(address, DATABUS)
+    // address = DATABUS;
     memUpdate(loc); // Update memory UI
 }
