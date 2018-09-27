@@ -6,11 +6,15 @@ var val1 = [];
 var val2 = [];
 function getVal(value){
   if (value == 1){
-    val1 = DATABUS;
+    val = val1;
   }
-  else if (value == 2){
-    val2 = DATABUS;
+  else{
+    val = val2;
   }
+  for (i = 0; i < 8; i++){
+    val[i] = parseInt(DATABUS[i], 10);
+  }
+
 }
 
 
@@ -54,7 +58,7 @@ function addition(){
 
 
 function sub(){
-checkTypes(val1, val2);
+
   // Subtract values
   numList = [val1, val2];
   outList = [];
@@ -66,8 +70,7 @@ checkTypes(val1, val2);
   return outList;
 }
 
-function and(val1, val2){
-  checkTypes(val1, val2);
+function and(){
   // Bitwise AND
   outList = [];
   for (i=0; i < val1.length; i++){
@@ -82,8 +85,7 @@ function and(val1, val2){
 
 }
 
-function or(val1, val2){
-  checkTypes(val1, val2);
+function or(){
   // Bitwise OR
   outList = [];
   for (i=0; i < val1.length; i++){
@@ -102,8 +104,7 @@ return outList;
 }
 
 
-function xor(val1, val2){
-  checkTypes(val1, val2);
+function xor(){
   // Bitwise XOR
   outList = [];
   for (i = 0; i < val1.length; i++){
@@ -117,7 +118,7 @@ function xor(val1, val2){
   return outList;
 }
 
-function not(val1){
+function not(){
   console.log("Starting NOT function");
   // Bitwise NOT
   outList = [];

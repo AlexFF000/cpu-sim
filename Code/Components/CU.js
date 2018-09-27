@@ -125,7 +125,7 @@ function bitwiseXor(){
 
 }
 
-function read(operand){
+function read(){
 
     // Request bus permissions, put on address bus, get operand from memory, perms, data on data bus, put into accumulator
     subqueue =[
@@ -138,18 +138,19 @@ function read(operand){
     ]
 }
 
-function write(operand){
+function write(){
     // Request bus permissions, put on address bus, get data from accumulator, perms, data on data bus, write to memory
     subqueue = [
       "updateBus(ADDRESSBUS, MDR)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
+      "updateBus(DATABUS, ACC)",
       "writeData()"
     ]
 }
 
-function goto(mode, operand){
+function goto(){
   subqueue = [
     "dataRequest()",
     "busGrant()",
@@ -196,6 +197,7 @@ function end(){
   queue = [];
   subqueue = [];
   clearInterval(ticks);
+  reporting("Finishing program");
 }
 
 function busGrant(){
@@ -236,10 +238,11 @@ function getOperand(){ // Potential scope issues (will be run by clock, is part 
   if (mode == "01"){ // Operand is memory address, actual data must be fetched
     subqueue = [
       "updateBus(MAR, operand)",
+      "updateBus(ADDRESSBUS, operand)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
-      "outputData()",
+      "outputData()", // Problem seems to be here.  getOperand() puts value from PC into Addressbus (Pc contains opcode, not operand)
       "update(MDR)"
     ]
 

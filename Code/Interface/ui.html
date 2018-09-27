@@ -14,6 +14,26 @@
   <br>
   <textarea id="instructions" rows="20"></textarea>
   <button name="load" value="start" onclick="start()"></button>
+
+  <select id='pickOpc' >
+	<option title='Add' value='0000'>Add</option>
+	<option title='Subtract' value='0001'>Subtract</option>
+	<option title='AND' value='0010'>AND</option>
+	<option title='OR' value='0011'>OR</option>
+	<option title='XOR' value='0100'>XOR</option>
+	<option title='NOT' value='0101'>NOT</option>
+	<option title='Read' value='0110'>Read</option>
+	<option title='Write' value='0111'>Write</option>
+	<option title='Goto' value='1000'>Goto</option>
+	<option title='goto_ifPos' value='1001'>goto_ifPos</option>
+	<option title='goto_ifNeg' value='1010'>goto_ifNeg</option>
+	<option title='goto_ifZero' value='1011'>goto_ifZero</option>
+	<option title='Clear' value='1100'>Clear</option>
+	<option title='Output' value='1101'>Output</option>
+	<option title='End' value='1110'>End</option>
+</select>
+<select id="pickMode"><option value="00">Data</option><option value="01">Address</option></select><input id="pickOper" type="text" maxlength="5" /><input id="convertToMCode" type="button" value="Convert" onclick="convert()" /> <input id="convertBox" type="text" readonly="true" />
+
   <p>Program Counter</p>
   <input id="PCbox" type="text" maxlength="8" readonly="true" />
   <p>Memory address register</p>

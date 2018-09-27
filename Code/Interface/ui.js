@@ -33,3 +33,17 @@ function memUpdate(addr){
   let table = memUi[row].cells;
   table[col].innerHTML = RAM[addr].join("");
 }
+
+function convert(){
+  let convert_Opcode = document.getElementById("pickOpc").value;
+  let convert_Mode = document.getElementById("pickMode").value;
+  var convert_Operand = document.getElementById("pickOper").value;
+  convert_Operand = parseInt(convert_Operand, 10);
+  convert_Operand = convert_Operand.toString(2);
+  let addBits = 8 - convert_Operand.length;
+  for (addBits > 0; addBits--;){
+    convert_Operand = "0" + convert_Operand;
+  }
+  let convert_Combine = convert_Opcode + convert_Mode + convert_Operand;
+  document.getElementById("convertBox").value = convert_Combine;
+}

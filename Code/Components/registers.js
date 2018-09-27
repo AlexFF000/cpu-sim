@@ -13,8 +13,8 @@ function initReg(){
 }
 
 function update(register){
-  for (i = 0; i < 8; i++){
-    register[i] = DATABUS[i];
+  for (i = 0; i < 8; i++){ // Deep copy values
+    register[i] = parseInt(DATABUS[i], 2);
   }
 }
 
