@@ -50,7 +50,7 @@ function add(){
     subqueue = [
       "dataRequest()",
       "busGrant()",
-      "updateBus(DATABUS, operand)",
+      //"updateBus(DATABUS, operand)", // already contains correct value (this messes up 01 addressing)
       "getVal(1)",
       "dataRequest()",
       "busGrant()",
@@ -122,6 +122,21 @@ function bitwiseNot(){
 }
 
 function bitwiseXor(){
+  subqueue = [
+    "dataRequest()",
+    "busGrant()",
+    "updateBus(DATABUS, MDR)",
+    "getVal(1)",
+    "dataRequest()",
+    "busGrant()",
+    "updateBus(DATABUS, ACC)",
+    "getVal(2)",
+    "xor()",
+    "dataRequest()",
+    "busGrant()",
+    "updateBus(DATABUS, outList)",
+    "update(ACC)"
+  ]
 
 }
 
@@ -190,7 +205,18 @@ function clear(){
 }
 
 function output(){
-  // UI output function(accumulator contents)
+  if (mode == "01"){
+    subqueue = [
+    "updateBus(DATABUS, MDR)",
+    "outputToUser()"
+  ]
+  }
+  else {
+    subqueue = [
+      "updateBus(DATABUS, ACC)",
+      "outputToUser()"
+    ]
+  }
 }
 
 function end(){

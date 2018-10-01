@@ -34,6 +34,10 @@ function memUpdate(addr){
   table[col].innerHTML = RAM[addr].join("");
 }
 
+function outputToUser(){
+  document.getElementById("outBox").value = DATABUS.join("");
+}
+
 function convert(){
   let convert_Opcode = document.getElementById("pickOpc").value;
   let convert_Mode = document.getElementById("pickMode").value;
