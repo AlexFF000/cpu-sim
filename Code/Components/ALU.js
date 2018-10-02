@@ -4,6 +4,7 @@
 var outList = [];
 var val1 = [];
 var val2 = [];
+var subtract;
 function getVal(value){
   if (value == 1){
     val = val1;
@@ -45,30 +46,21 @@ function addition(){
     console.log(JSON.stringify(len));
     if (carry == 1 && len == 0){
       console.log("len is 0, but there is another carry")
-      outList.unshift(1);
+      // outList.unshift(1);
+      CONTROLBUS.flags = [3, 1]; // Set carry flag
     }
     reporting("Added")
     console.log(JSON.stringify(outList))
+
+    if (outList[0] != val1[0] && outList !=val2[0]){ // This may or may not work // Overflow is only for signed operations
+      CONTROLBUS.flags = [2, 1]; // Set overflow flag
+    }
+
     }
     return outList;
     }
 
 
-
-
-
-function sub(){
-
-  // Subtract values
-  numList = [val1, val2];
-  outList = [];
-  for (i=0; i < numlist[0].length; i++){
-    outList.push(numList[0][0] - numList[1][0]);
-    numList[0].splice(0);
-    numList[1].splice(0);
-}
-  return outList;
-}
 
 function and(){
   // Bitwise AND
@@ -134,4 +126,11 @@ function not(){
   console.log("returning number");
   console.log(JSON.stringify(outList));
   return outList;
+  }
+
+  function twosComplement(){
+    not();
+    val1 = outList;
+    val2 = [0,0,0,0,0,0,0,1];
+    addition();
   }

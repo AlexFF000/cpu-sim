@@ -66,8 +66,25 @@ function add(){
   }
 
 
-function sub(mode, operand){
-
+function sub(){
+  subqueue = [
+    "getVal(1)",
+    "twosComplement()",
+    "dataRequest()",
+    "busGrant()",
+    "updateBus(DATABUS, outList)",
+    "getVal(1)",
+    "dataRequest()",
+    "busGrant()",
+    "updateBus(DATABUS, ACC)",
+    "getVal(2)",
+    "subtract = true",
+    "addition()",
+    "dataRequest()",
+    "busGrant()",
+    "updateBus(DATABUS, outList)",
+    "update(ACC)"
+  ]
 }
 
 function bitwiseAnd(){
@@ -144,24 +161,28 @@ function read(){
 
     // Request bus permissions, put on address bus, get operand from memory, perms, data on data bus, put into accumulator
     subqueue =[
+      "CONTROLBUS.read = 1",
       "updateBus(ADDRESSBUS, MDR)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
       "outputData()",
-      "update(ACC)"
+      "update(ACC)",
+      "CONTROLBUS.read = 0"
     ]
 }
 
 function write(){
     // Request bus permissions, put on address bus, get data from accumulator, perms, data on data bus, write to memory
     subqueue = [
+      "CONTROLBUS.write = 1",
       "updateBus(ADDRESSBUS, MDR)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
       "updateBus(DATABUS, ACC)",
-      "writeData()"
+      "writeData()",
+      "CONTROLBUS.write = 0"
     ]
 }
 
@@ -226,6 +247,7 @@ function end(){
   reporting("Finishing program");
 }
 
+
 function busGrant(){
   CONTROLBUS.grant = 1;
   CONTROLBUS.request = 0;
@@ -238,21 +260,25 @@ function fetch(){
     "busGrant()",
     "updateBus(DATABUS, PC)",
     "update(MAR)",
+    "CONTROLBUS.read = 1",
     "updateBus(ADDRESSBUS, MAR)",
     "getAddress()",
     "dataRequest()",
     "busGrant()",
     "outputData()",
     "update(MDR)",
+    "CONTROLBUS.read = 0",
     "dataRequest()",
     "busGrant()",
     "updateBus(DATABUS, MDR)",
     "cirUpdate(1)",
     "increment(MAR)",
+    "CONTROLBUS.read = 1",
     "updateBus(ADDRESSBUS, MAR)",
     "getAddress()",
     "outputData()",
     "cirUpdate(2)",
+    "CONTROLBUS.read = 0",
     "increment(PC)",
     "decode()"
   ]
@@ -263,13 +289,15 @@ function fetch(){
 function getOperand(){ // Potential scope issues (will be run by clock, is part of decode)
   if (mode == "01"){ // Operand is memory address, actual data must be fetched
     subqueue = [
+      "CONTROLBUS.read = 1",
       "updateBus(MAR, operand)",
       "updateBus(ADDRESSBUS, operand)",
       "getAddress()",
       "dataRequest()",
       "busGrant()",
       "outputData()", // Problem seems to be here.  getOperand() puts value from PC into Addressbus (Pc contains opcode, not operand)
-      "update(MDR)"
+      "update(MDR)",
+      "CONTROLBUS.read = 0"
     ]
 
 }

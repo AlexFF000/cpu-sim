@@ -3,6 +3,7 @@ var CIR;
 var MAR;
 var MDR;
 var ACC;
+var STATUS;
 var cirarray = [];
 function initReg(){
   PC = [0,0,0,0,0,0,0,0];
@@ -10,6 +11,11 @@ function initReg(){
   MAR = [0,0,0,0,0,0,0,0];
   MDR = [0,0,0,0,0,0,0,0];
   ACC = [0,0,0,0,0,0,0,0];
+  STATUS = {"zero": 0,
+            "negative": 0,
+            "overflow": 0,
+            "carry": 0
+          }
 }
 
 function update(register){

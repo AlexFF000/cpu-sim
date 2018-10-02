@@ -7,8 +7,8 @@ function initBus(){
       "grant": 0,
       "write": 0,
       "read": 0,
-      "irq": 0,
-      "clock": 0
+      "clock": 0,
+      "flags": [0,0]
     }
 
     var ADDRESSBUS = [0,0,0,0,0,0,0,0];
