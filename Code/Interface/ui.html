@@ -25,16 +25,37 @@
 	<option title='Read' value='0110'>Read</option>
 	<option title='Write' value='0111'>Write</option>
 	<option title='Goto' value='1000'>Goto</option>
-	<option title='goto_ifPos' value='1001'>goto_ifPos</option>
-	<option title='goto_ifNeg' value='1010'>goto_ifNeg</option>
-	<option title='goto_ifZero' value='1011'>goto_ifZero</option>
-	<option title='Clear' value='1100'>Clear</option>
+	<option title='goto_ifPos' value='1001'>branch_ifZero</option>
+	<option title='goto_ifNeg' value='1010'>branch_ifNeg</option>
+	<option title='goto_ifZero' value='1011'>branch_ifOverflow</option>
+	<option title='Clear' value='1100'>branch_ifCarry</option>
 	<option title='Output' value='1101'>Output</option>
 	<option title='End' value='1110'>End</option>
 </select>
 <select id="pickMode"><option value="00">Data</option><option value="01">Address</option></select><input id="pickOper" type="text" maxlength="5" /><input id="convertToMCode" type="button" value="Convert" onclick="convert()" /> <input id="convertBox" type="text" readonly="true" />
   <p>Output</p>
   <input id="outBox" type="text" readonly="true" />
+  <table id="statReg" width="8%" border="1">
+  <caption>
+    Status Register
+  </caption>
+  <tr>
+    <td width="50%">Zero</td>
+    <td width="50%">0</td>
+  </tr>
+  <tr>
+    <td>Negative</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>Overflow</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td height="23">Carry</td>
+    <td>0</td>
+  </tr>
+</table>
   <p>Program Counter</p>
   <input id="PCbox" type="text" maxlength="8" readonly="true" />
   <p>Memory address register</p>

@@ -4,10 +4,10 @@ function start(){
   var usrInput = document.getElementById("instructions").value;
   var instructions = [];
   var quantity = usrInput.length / 14;
-  for (i = 0; i < quantity; i++){
+  for (var i = 0; i < quantity; i++){
     var commandStr = usrInput.slice(0, 14);
     var command = [];
-    for (x = 0; x < 14; x++){
+    for (var x = 0; x < 14; x++){
       let commandNum = parseInt(commandStr[x], 10);
       command.push(commandNum);
     }
@@ -25,6 +25,7 @@ function uiUpdate(){
   document.getElementById("CIRbox").value = CIR.join("");
   document.getElementById("addressBox").value = ADDRESSBUS.join("");
   document.getElementById("dataBox").value = DATABUS.join("");
+  statUIUpdate();
 }
 
 function memUpdate(addr){
@@ -32,6 +33,18 @@ function memUpdate(addr){
   let col = addr % 16;
   let table = memUi[row].cells;
   table[col].innerHTML = RAM[addr].join("");
+}
+
+function statUIUpdate(){
+  let tab = document.getElementById("statReg").rows;
+  let row = tab[0].cells;
+  row[1].innerHTML = STATUS[0];
+  row = tab[1].cells;
+  row[1].innerHTML = STATUS[1];
+  row = tab[2].cells;
+  row[1].innerHTML = STATUS[2];
+  row = tab[3].cells;
+  row[1].innerHTML = STATUS[3];
 }
 
 function outputToUser(){

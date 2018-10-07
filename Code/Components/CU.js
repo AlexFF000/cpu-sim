@@ -23,16 +23,16 @@ function control(instructions, frequency){ // Recieve instructions, load into me
      read,
      write,
      goto,
-     goto_ifPos,
-     goto_ifNeg,
-     goto_ifZero,
-     clear, // Useless, remove
+     branch_ifZero,
+     branch_ifNeg,
+     branch_ifOverflow,
+     branch_ifCarry,
      output,
      end
   ]
   reporting("Loading instructions into memory");
   var x = 0;  // Instructions are 14 bits long but RAM supports only 8 bits
-  for (i = 0; i < instructions.length; i++){
+  for (var i = 0; i < instructions.length; i++){
     RAM[x] = instructions[i].slice(0, 8); // Instructions are split into two parts
     memUpdate(x)
     x++;
@@ -195,35 +195,54 @@ function goto(){
   ]
 }
 
-function goto_ifPos(mode, operand){
-  var accContents = ACC.join("");
-  accContents = parseInt(accContents, 2);
-  if (accContents >= 0){
+function branch_ifZero(){
+  if (STATUS[0] == 1){
+    reporting("Zero flag is set, branching");
+    goto();
+  }
+  else {
+    reporting("Zero flag is not set");
+    subqueue = [];
+  }
+}
+
+function branch_ifNeg(){
+  if (STATUS[1] == 1){
+    reporting("Negative flag is set, branching")
+    goto();
+  }
+  else{
+    reporting("Negative flag is not set");
+    subqueue = [];
+  }
+}
+
+function branch_ifOverflow(){
+  if (STATUS[2] == 1){
+    reporting("Overflow flag is set, branching");
+    goto();
+  }
+  else {
+    reporting("Overflow flag is not set");
+    subqueue = [];
+  }
+}
+
+function branch_ifCarry(){
+  if (STATUS[3] == 1){
+    reporting("Carry flag is set, branching");
     goto()
   }
-}
-
-function goto_ifNeg(mode, operand){
-  var accContents = ACC.join("");
-  accContents = parseInt(accContents, 2); // May not work if twos complement
-  if (accContents < 0){
-    goto();
+  else{
+    reporting("Carry flag is not set");
+    subqueue = [];
   }
 }
 
-function goto_ifZero(mode, operand){
-  var accContents = ACC.join("");
-  accContents = parseInt(accContents, 2);
-  if (accContents == 0){
-    goto();
-  }
-}
 
-function clear(){
-  subqueue = [
 
-  ]
-}
+
+
 
 function output(){
   if (mode == "01"){

@@ -3,7 +3,7 @@ var RAM;
 var loc;
 function initMem(){
   RAM = [];
-  for (i = 0; i < 256; i++){
+  for (var i = 0; i < 256; i++){
     RAM.push([0,0,0,0,0,0,0,0]);
   }
 

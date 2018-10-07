@@ -25,7 +25,12 @@ function dataRequest(){
 }
 
 function updateBus(bus, register){
-  for (i = 0; i < register.length; i++){
+  for (var i = 0; i < register.length; i++){
     bus[i] = register[i];
   }
+}
+
+function changeFlag(flagArray){
+  updateBus(CONTROLBUS.flags, flagArray);
+  statusUpdate();
 }

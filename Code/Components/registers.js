@@ -11,15 +11,15 @@ function initReg(){
   MAR = [0,0,0,0,0,0,0,0];
   MDR = [0,0,0,0,0,0,0,0];
   ACC = [0,0,0,0,0,0,0,0];
-  STATUS = {"zero": 0,
-            "negative": 0,
-            "overflow": 0,
-            "carry": 0
-          }
+  STATUS = [ 0, // Zero
+             0, // Negative
+             0, // Overflow
+             0 // Carry
+          ];
 }
 
 function update(register){
-  for (i = 0; i < 8; i++){ // Deep copy values
+  for (var i = 0; i < 8; i++){ // Deep copy values
     register[i] = parseInt(DATABUS[i], 2);
   }
 }
@@ -38,6 +38,16 @@ function cirUpdate(part){
   }
 }
 
+function statusUpdate(){
+  var flag = CONTROLBUS.flags[0];
+  if (CONTROLBUS.flags[1] == 0){
+    STATUS[flag] = 0;
+  }
+  else {
+    STATUS[flag] = 1;
+  }
+  }
+
 function increment(reg){
   if (reg == PC){
     var val1 = PC;
@@ -50,7 +60,7 @@ function increment(reg){
   var outList = [];
   var carry = 0;
   len = 8;
-  for (i = 0; i < 8; i++){
+  for (var i = 0; i < 8; i++){
     var sum = val1[len - 1] + val2[len - 1] + carry;
     if (sum == 0){
       outList.unshift(0);
