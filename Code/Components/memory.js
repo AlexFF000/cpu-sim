@@ -13,6 +13,10 @@ function getAddress(){
   loc = ADDRESSBUS.join("");
   loc = parseInt(loc, 2);
   address = RAM[loc];
+  if (loc > 256){
+    reporting("Insufficient memory");
+    clearInterval(ticks);
+  }
 }
 
 function outputData(){

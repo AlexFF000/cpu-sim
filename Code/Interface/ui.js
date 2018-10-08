@@ -1,6 +1,24 @@
 var memUi;
+var program_counter, memaddr_reg, memdat_reg, acc_reg, currinst_reg;
+var addr_bus, dat_bus, mem_table, stat_table, output_field, info_field;
+
+function getOutputs(){
+  // Contains DOM IDs of elements on HTML page
+  program_counter = "PCbox"; // Output field for program counter
+  memaddr_reg = "MARbox"; // Output field for memory address register
+  memdat_reg = "MDRbox";  // Output field for memory data register
+  acc_reg = "ACCbox"; // Output field for accumulator
+  currinst_reg = "CIRbox"; // Output field for current instruction register
+  addr_bus = "addressBox"; // Output field for address box
+  dat_bus = "dataBox"; // Output field for data box
+  mem_table = "memTable"; // Table containing memory addresses
+  stat_table = "statReg"; // Table for status register
+  output_field = "outBox"; // Field for outputting data to user
+  info_field = "reportBox"; // Field for outputting information and errors to user
+}
 function start(){
-  memUi = document.getElementById("memTable").rows;  // For use in uiUpdate later
+  getOutputs();
+  memUi = document.getElementById(mem_table).rows;  // For use in uiUpdate later
   var usrInput = document.getElementById("instructions").value;
   var instructions = [];
   var quantity = usrInput.length / 14;
@@ -18,13 +36,13 @@ function start(){
 }
 
 function uiUpdate(){
-  document.getElementById("PCbox").value = PC.join("");
-  document.getElementById("MARbox").value = MAR.join("");
-  document.getElementById("MDRbox").value = MDR.join("");
-  document.getElementById("ACCbox").value = ACC.join("");
-  document.getElementById("CIRbox").value = CIR.join("");
-  document.getElementById("addressBox").value = ADDRESSBUS.join("");
-  document.getElementById("dataBox").value = DATABUS.join("");
+  document.getElementById(program_counter).value = PC.join("");
+  document.getElementById(memaddr_reg).value = MAR.join("");
+  document.getElementById(memdat_reg).value = MDR.join("");
+  document.getElementById(acc_reg).value = ACC.join("");
+  document.getElementById(currinst_reg).value = CIR.join("");
+  document.getElementById(addr_bus).value = ADDRESSBUS.join("");
+  document.getElementById(dat_bus).value = DATABUS.join("");
   statUIUpdate();
 }
 
@@ -36,7 +54,7 @@ function memUpdate(addr){
 }
 
 function statUIUpdate(){
-  let tab = document.getElementById("statReg").rows;
+  let tab = document.getElementById(stat_table).rows;
   let row = tab[0].cells;
   row[1].innerHTML = STATUS[0];
   row = tab[1].cells;
@@ -48,7 +66,7 @@ function statUIUpdate(){
 }
 
 function outputToUser(){
-  document.getElementById("outBox").value = DATABUS.join("");
+  document.getElementById(output_field).value = DATABUS.join("");
 }
 
 function convert(){

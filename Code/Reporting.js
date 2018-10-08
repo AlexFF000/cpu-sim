@@ -1,4 +1,4 @@
 // Reporting function
 function reporting(message){
-  document.getElementById("reportBox").value = message;
+  document.getElementById(info_field).value = message;
 }
