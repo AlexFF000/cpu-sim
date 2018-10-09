@@ -10,8 +10,6 @@
   <script src="../Reporting.js"></script>
 </head>
 <body>
-  <p1>You have disabled CORS in firefox, because it blocks Javascript imports, you will need to find a workaround before releasing</p1>
-  <br>
   <textarea id="instructions" rows="20"></textarea>
   <input name="load" value="start" onclick="start()" type="button"></input>
   <input id="playPause" value="Pause" onclick="playPause()" type="button"></input>
@@ -57,16 +55,38 @@
     <td>0</td>
   </tr>
 </table>
+
+<div class="register">
   <p>Program Counter</p>
-  <input id="PCbox" type="text" maxlength="8" readonly="true" />
+  <input id="PCbox" type="text" maxlength="8" readonly="true"/>
+</div>
+<div id="line0" class="busline"></div>
+<div class="register">
   <p>Memory address register</p>
   <input id="MARbox" type="text" maxlength="8" readonly="true" />
+</div>
+<div class="register">
   <p>Memory data register</p>
   <input id="MDRbox" type="text" maxlength="8" readonly="true" />
+</div>
+<div class="register">
   <p>Accumulator</p>
   <input id="ACCbox" type="text" maxlength="8" readonly="true" />
+</div>
+<div class="register">
   <p>Current Instruction Register</p>
   <input id="CIRbox" type="text" maxlength="14" readonly="true" />
+</div>
+<div class="data_bus">
+  <div id="line0" class="busline"></div>
+  <div id="line1" class="busline"></div>
+  <div id="line2" class="busline"></div>
+  <div id="line3" class="busline"></div>
+  <div id="line4" class="busline"></div>
+  <div id="line5" class="busline"></div>
+  <div id="line6" class="busline"></div>
+  <div id="line7" class="busline"></div>
+</div>
   <br>
   <br>
   <p>Address bus</p>
@@ -370,4 +390,42 @@
     <td>00000000</td>
   </tr>
 </table>
+<style>
+  .register {
+    border: 10px solid grey;
+    background-color: grey;
+    width: 175px;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+    margin-bottom: 10px;
+    display: inline-block;;
+  }
+
+  .data_bus{
+    height: 100vh;
+    z-index: 1;
+    position: relative;
+  }
+
+  .busline{
+
+    display: inline-block;
+    border: solid hidden;
+    background-color: grey;
+    width: 10%;
+    height: 1%;
+    z-index: inherit;
+  }
+
+  .databus0{}
+  .databus1{}
+  .databus2{}
+  .databus3{}
+  .databus4{}
+  .databus5{}
+  .databus6{}
+  .databus7{}
+
+</style>
 </body>

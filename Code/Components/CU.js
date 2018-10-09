@@ -4,12 +4,13 @@ var opcode;
 var mode;
 var operand;
 var ticks;
-
+var freq;
 var queue = []; // Points to functions for each command
 var subqueue = []; // Merges into queue to add next instruction
 
 
 function control(instructions, frequency){ // Recieve instructions, load into memory, start simulation
+  freq = frequency;
   initMem();
   initBus();
   initReg();
@@ -373,6 +374,18 @@ function execute(){
 
 
 }
+
+function pause(){
+  paused = true;
+  clearInterval(ticks);
+}
+
+function resume(){
+  paused = false;
+  clock(freq);
+}
+
+
 
 function clock(frequency){
   function runProcesses(){

@@ -1,5 +1,5 @@
-var memUi;
-var program_counter, memaddr_reg, memdat_reg, acc_reg, currinst_reg;
+var memUi, paused;
+var program_counter, memaddr_reg, memdat_reg, acc_reg, currinst_reg, pause_but;
 var addr_bus, dat_bus, mem_table, stat_table, output_field, info_field;
 
 function getOutputs(){
@@ -15,6 +15,7 @@ function getOutputs(){
   stat_table = "statReg"; // Table for status register
   output_field = "outBox"; // Field for outputting data to user
   info_field = "reportBox"; // Field for outputting information and errors to user
+  pause_but = "playPause"; // Pause / resume button
 }
 function start(){
   getOutputs();
@@ -67,6 +68,17 @@ function statUIUpdate(){
 
 function outputToUser(){
   document.getElementById(output_field).value = DATABUS.join("");
+}
+
+function playPause(){
+  if (paused != true){
+    document.getElementById(pause_but).value = "Resume";
+    pause();
+  }
+  else{
+    document.getElementById(pause_but).value = "Pause";
+    resume();
+  }
 }
 
 function convert(){
