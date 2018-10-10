@@ -10,9 +10,13 @@
   <script src="../Reporting.js"></script>
 </head>
 <body>
-  <textarea id="instructions" rows="20"></textarea>
-  <input name="load" value="start" onclick="start()" type="button"></input>
-  <input id="playPause" value="Pause" onclick="playPause()" type="button"></input>
+  <textarea id="instructionBox" rows="20" disabled="true">Please choose an input langauge</textarea>
+  <form><p>Language:</p>
+  <input type="radio" name="entryMode" onclick="formatEntry(0)">Assembly code</input><br>
+  <input type="radio" name="entryMode" onclick="formatEntry(1)"></input>Machine code</form>
+  <input id="clockSpeed" type="number" min="1" max="100" maxlength="3">hz</input>
+  <input id="load" value="start" onclick="start()" type="button" disabled="true"></input>
+  <input id="playPause" value="Pause" onclick="playPause()" type="button" disabled="true"></input>
 
   <select id='pickOpc' >
 	<option title='Add' value='0000'>Add</option>
@@ -33,6 +37,7 @@
 </select>
 <select id="pickMode"><option value="00">Data</option><option value="01">Address</option></select><input id="pickOper" type="text" maxlength="5" /><input id="convertToMCode" type="button" value="Convert" onclick="convert()" /> <input id="convertBox" type="text" readonly="true" />
   <p>Output</p>
+  <input id="reportBox" type="text" readonly="true" />
   <input id="outBox" type="text" readonly="true" />
   <table id="statReg" width="8%" border="1">
   <caption>
@@ -60,11 +65,13 @@
   <p>Program Counter</p>
   <input id="PCbox" type="text" maxlength="8" readonly="true"/>
 </div>
-<div id="line0" class="busline"></div>
+<div  class="databusLine"></div>
 <div class="register">
   <p>Memory address register</p>
   <input id="MARbox" type="text" maxlength="8" readonly="true" />
 </div>
+<div  class="databusLine"></div>
+
 <div class="register">
   <p>Memory data register</p>
   <input id="MDRbox" type="text" maxlength="8" readonly="true" />
@@ -77,24 +84,41 @@
   <p>Current Instruction Register</p>
   <input id="CIRbox" type="text" maxlength="14" readonly="true" />
 </div>
-<div class="data_bus">
-  <div id="line0" class="busline"></div>
-  <div id="line1" class="busline"></div>
-  <div id="line2" class="busline"></div>
-  <div id="line3" class="busline"></div>
-  <div id="line4" class="busline"></div>
-  <div id="line5" class="busline"></div>
-  <div id="line6" class="busline"></div>
-  <div id="line7" class="busline"></div>
+<br>
+<h>Data Bus</h>
+<div class="data_bus" id="dataBox">
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
 </div>
-  <br>
-  <br>
-  <p>Address bus</p>
-  <input id="addressBox" type="text" readonly="true" />
-  <p>Data bus</p>
-  <input id="dataBox" type="text" readonly="true" />
-  <br>
-  <input id="reportBox" type="text" readonly="true" />
+<h>Address Bus</h>
+<div class="address_bus" id="addressBox">
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+</div>
+<h>Control Bus</h>
+<div class="control_bus" id="controlBox">
+  <div value="clock" class="busline"></div>
+  <div value="databus request"class="busline"></div>
+  <div  value="databus grant" class="busline"></div>
+  <div  value="write" class="busline"></div>
+  <div  value="read" class="busline"></div>
+  <div  value="status flag position" class="busline"></div>
+  <div  value="status flag value" class="busline"></div>
+</div>
+
+
 
 
   <table width="50%" border="1" id="memTable">
@@ -397,15 +421,47 @@
     width: 175px;
     text-align: center;
     z-index: 2;
-    position: relative;
+    position: sticky;
     margin-bottom: 10px;
-    display: inline-block;;
+    display: inline-grid;
+    left: 10px
+  }
+
+  .databusLine{
+    border: solid black;
+    display: inline-grid;
+
   }
 
   .data_bus{
-    height: 100vh;
+
     z-index: 1;
     position: relative;
+    border: solid black 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+
+  }
+
+  .address_bus{
+
+    z-index: 1;
+    position: relative;
+    border: solid green 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+  }
+
+  .control_bus{
+
+    z-index: 1;
+    position: relative;
+    border: solid orange 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
   }
 
   .busline{
@@ -413,9 +469,11 @@
     display: inline-block;
     border: solid hidden;
     background-color: grey;
-    width: 10%;
-    height: 1%;
+    width: 5%;
+    height: 100%;
     z-index: inherit;
+    margin-left: 2.5%;
+    margin-right: 1.25%;
   }
 
   .databus0{}

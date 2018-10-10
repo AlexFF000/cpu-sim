@@ -10,7 +10,7 @@ var subqueue = []; // Merges into queue to add next instruction
 
 
 function control(instructions, frequency){ // Recieve instructions, load into memory, start simulation
-  freq = frequency;
+  freq = 1000 / frequency;
   initMem();
   initBus();
   initReg();
@@ -382,15 +382,17 @@ function pause(){
 
 function resume(){
   paused = false;
-  clock(freq);
+  clock();
 }
 
 
 
-function clock(frequency){
+function clock(){
+  var frequency = freq / 2;
   function runProcesses(){
     function clockOff(){
       CONTROLBUS.clock = 0;
+      cBusUpdate();
     }
     CONTROLBUS.clock = 1;
     eval(queue[0]);

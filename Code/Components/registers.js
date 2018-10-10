@@ -71,8 +71,14 @@ function increment(reg){
       carry = 0;
       }
     else if (sum > 1){
+      if (sum == 3){
+        outList.unshift(1);
+        carry = 1;
+      }
+      else{
       outList.unshift(0)
       carry = 1;
+    }
     }
     len--;
     if (carry == 1 && len == 0){
