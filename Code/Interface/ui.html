@@ -10,31 +10,38 @@
   <script src="../Reporting.js"></script>
 </head>
 <body>
-  <p1>You have disabled CORS in firefox, because it blocks Javascript imports, you will need to find a workaround before releasing</p1>
-  <br>
-  <textarea id="instructions" rows="20"></textarea>
-  <input name="load" value="start" onclick="start()" type="button"></input>
-  <input id="playPause" value="Pause" onclick="playPause()" type="button"></input>
+  <textarea id="instructionBox" rows="20" disabled="true">Please choose an input langauge</textarea>
+  <form><p>Language:</p>
+  <input type="radio" name="entryMode" onclick="formatEntry(0)">Assembly code</input><br>
+  <input type="radio" name="entryMode" onclick="formatEntry(1)"></input>Machine code</form>
+  <input id="clockSpeed" type="number" min="1" max="100" maxlength="3">hz</input>
+  <input id="load" value="start" onclick="start()" type="button" disabled="true"></input>
+  <input id="playPause" value="Pause" onclick="playPause()" type="button" disabled="true"></input>
+  <div id="converter" class="converter">
+    <h>Create machine code instructions</h>
+    <br>
+    <select id='pickOpc' >
+  	<option title='Add' value='0000'>Add</option>
+  	<option title='Subtract' value='0001'>Subtract</option>
+  	<option title='AND' value='0010'>AND</option>
+  	<option title='OR' value='0011'>OR</option>
+  	<option title='XOR' value='0100'>XOR</option>
+  	<option title='NOT' value='0101'>NOT</option>
+  	<option title='Read' value='0110'>Read</option>
+  	<option title='Write' value='0111'>Write</option>
+  	<option title='Goto' value='1000'>Goto</option>
+  	<option title='goto_ifPos' value='1001'>branch_ifZero</option>
+  	<option title='goto_ifNeg' value='1010'>branch_ifNeg</option>
+  	<option title='goto_ifZero' value='1011'>branch_ifOverflow</option>
+  	<option title='Clear' value='1100'>branch_ifCarry</option>
+  	<option title='Output' value='1101'>Output</option>
+  	<option title='End' value='1110'>End</option>
+  </select>
+  <select id="pickMode"><option value="00">Data</option><option value="01">Address</option></select><input id="pickOper" type="text" maxlength="5" /><input id="convertToMCode" type="button" value="Convert" onclick="convert()" /> <input id="convertBox" type="text" readonly="true" />
+  </div>
 
-  <select id='pickOpc' >
-	<option title='Add' value='0000'>Add</option>
-	<option title='Subtract' value='0001'>Subtract</option>
-	<option title='AND' value='0010'>AND</option>
-	<option title='OR' value='0011'>OR</option>
-	<option title='XOR' value='0100'>XOR</option>
-	<option title='NOT' value='0101'>NOT</option>
-	<option title='Read' value='0110'>Read</option>
-	<option title='Write' value='0111'>Write</option>
-	<option title='Goto' value='1000'>Goto</option>
-	<option title='goto_ifPos' value='1001'>branch_ifZero</option>
-	<option title='goto_ifNeg' value='1010'>branch_ifNeg</option>
-	<option title='goto_ifZero' value='1011'>branch_ifOverflow</option>
-	<option title='Clear' value='1100'>branch_ifCarry</option>
-	<option title='Output' value='1101'>Output</option>
-	<option title='End' value='1110'>End</option>
-</select>
-<select id="pickMode"><option value="00">Data</option><option value="01">Address</option></select><input id="pickOper" type="text" maxlength="5" /><input id="convertToMCode" type="button" value="Convert" onclick="convert()" /> <input id="convertBox" type="text" readonly="true" />
   <p>Output</p>
+  <input id="reportBox" type="text" readonly="true" />
   <input id="outBox" type="text" readonly="true" />
   <table id="statReg" width="8%" border="1">
   <caption>
@@ -57,24 +64,62 @@
     <td>0</td>
   </tr>
 </table>
+
+<div class="register">
   <p>Program Counter</p>
-  <input id="PCbox" type="text" maxlength="8" readonly="true" />
+  <input id="PCbox" type="text" maxlength="8" readonly="true"/>
+</div>
+<div class="register">
   <p>Memory address register</p>
   <input id="MARbox" type="text" maxlength="8" readonly="true" />
+</div>
+<div class="register">
   <p>Memory data register</p>
   <input id="MDRbox" type="text" maxlength="8" readonly="true" />
+</div>
+<div class="register">
   <p>Accumulator</p>
   <input id="ACCbox" type="text" maxlength="8" readonly="true" />
+</div>
+<div class="register">
   <p>Current Instruction Register</p>
   <input id="CIRbox" type="text" maxlength="14" readonly="true" />
-  <br>
-  <br>
-  <p>Address bus</p>
-  <input id="addressBox" type="text" readonly="true" />
-  <p>Data bus</p>
-  <input id="dataBox" type="text" readonly="true" />
-  <br>
-  <input id="reportBox" type="text" readonly="true" />
+</div>
+<br>
+<h>Data Bus</h>
+<div class="data_bus" id="dataBox">
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+</div>
+<h>Address Bus</h>
+<div class="address_bus" id="addressBox">
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+  <div  class="busline"></div>
+</div>
+<h>Control Bus</h>
+<div class="control_bus" id="controlBox">
+  <div value="clock" class="busline"></div>
+  <div value="databus request"class="busline"></div>
+  <div  value="databus grant" class="busline"></div>
+  <div  value="write" class="busline"></div>
+  <div  value="read" class="busline"></div>
+  <div  value="status flag position" class="busline"></div>
+  <div  value="status flag value" class="busline"></div>
+</div>
+
+
 
 
   <table width="50%" border="1" id="memTable">
@@ -370,4 +415,186 @@
     <td>00000000</td>
   </tr>
 </table>
+<br>
+<table border="2"><tr><th>Instruction format</th><td>Opcode</td><td>Addressing mode</td><td>Operand</td></tr>
+<tr><th>Example (assembly)</th><td>ADD</td><td>D</td><td>052</td></tr>
+<th>Example (machine code)</th><td>0000</td><td>00</td><td>00110100</td></tr></table>
+<br>
+<table border="2">
+  <tr>
+    <th width="72">Instruction</th>
+  <th width="140">Assembly Mnemonic</th>
+<th width="98">Machine Code</th>
+<th width="313">Description</th>
+</tr>
+  <tr>
+    <td>Add</td>
+    <td>ADD</td>
+    <td>0000</td>
+    <td>Adds operand to value in  accumulator </td>
+  </tr>
+  <tr>
+    <td>Subtract</td>
+    <td>SUB</td>
+    <td>0001</td>
+    <td>Subtracts operand from value in accumulator </td>
+  </tr>
+  <tr>
+    <td>Bitwise and </td>
+    <td>AND</td>
+    <td>0010</td>
+    <td>Bitwise and of operand and value in accumulator </td>
+  </tr>
+  <tr>
+    <td>Bitwise or </td>
+    <td>BOR</td>
+    <td>0011</td>
+    <td>Bitwise or of operand and value in accumulator </td>
+  </tr>
+  <tr>
+    <td>Bitwise xor </td>
+    <td>XOR</td>
+    <td>0100</td>
+    <td>Bitwise exclusive or of operand and value in accumulator </td>
+  </tr>
+  <tr>
+    <td>Bitwise not </td>
+    <td>NOT</td>
+    <td>0101</td>
+    <td>Bitwise not of value in accumulator </td>
+  </tr>
+  <tr>
+    <td>Read</td>
+    <td>RED</td>
+    <td>0110</td>
+    <td>Fetch value from memory address (operand) and place in accumulator </td>
+  </tr>
+  <tr>
+    <td>Write</td>
+    <td>WRT</td>
+    <td>0111</td>
+    <td>Store value in accumulator at memory address (operand) </td>
+  </tr>
+  <tr>
+    <td>Goto</td>
+    <td>GTO</td>
+    <td>1000</td>
+    <td>Change address in program counter to operand, the instruction at address will be run next </td>
+  </tr>
+  <tr>
+    <td>Branch if zero </td>
+    <td>BIZ</td>
+    <td>1001</td>
+    <td>Goto if zero flag is set in status register </td>
+  </tr>
+  <tr>
+    <td>Branch if negative </td>
+    <td>BIN</td>
+    <td>1010</td>
+    <td>Goto if negative flag is set in status register</td>
+  </tr>
+  <tr>
+    <td>Branch if overflow </td>
+    <td>BIO</td>
+    <td>1011</td>
+    <td>Goto if overflow flag is set in status register</td>
+  </tr>
+  <tr>
+    <td>Branch if carry </td>
+    <td>BIC</td>
+    <td>1100</td>
+    <td>Goto if carry flag is set in status register</td>
+  </tr>
+  <tr>
+    <td>Output</td>
+    <td>OUT</td>
+    <td>1101</td>
+    <td>Output contents of accumulator to user, if addressing mode 01 is used, contents at specified memory address (opcode) will be output instead. </td>
+  </tr>
+  <tr>
+  <td>End</td>
+  <td>END</td>
+  <td>1110</td>
+  <td>Finish program </td>
+</tr>
+</table>
+<br>
+<table caption="Addressing Modes" border="2">
+<tr><th>Mode</th><th>Assembly</th><th>Machine code</th><th>Description</th></tr>
+<tr><td>Data</td><td>D</td><td>00</td><td>The operand given is the data to be used</td></tr>
+<tr><td>Address</td><td>A</td><td>01</td><td>The operand given is the address of the data to be used</td></tr>
+</table>
+<style>
+  .register {
+    border: 10px solid grey;
+    background-color: grey;
+    width: 175px;
+    text-align: center;
+    z-index: 2;
+    position: sticky;
+    margin-bottom: 10px;
+    display: inline-grid;
+    left: 10px
+  }
+
+  .databusLine{
+    border: solid black;
+    display: inline-grid;
+
+  }
+
+  .data_bus{
+
+    z-index: 1;
+    position: relative;
+    border: solid black 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+
+  }
+
+  .address_bus{
+
+    z-index: 1;
+    position: relative;
+    border: solid green 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+  }
+
+  .control_bus{
+
+    z-index: 1;
+    position: relative;
+    border: solid orange 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+  }
+
+  .busline{
+
+    display: inline-block;
+    border: solid hidden;
+    background-color: grey;
+    width: 5%;
+    height: 100%;
+    z-index: inherit;
+    margin-left: 2.5%;
+    margin-right: 1.25%;
+  }
+
+  .converter{
+    border: solid grey 1px;
+    background-color: lightgrey;
+    text-align: center;
+    visibility: hidden;
+
+
+  }
+
+
+</style>
 </body>

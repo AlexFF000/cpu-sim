@@ -25,7 +25,6 @@ function addition(){
   outList = [];
   var carry = 0;
   for (var i = 0; i < val1.length; i++){
-    console.log("loop");
     var sum = val1[len - 1] + val2[len - 1] + carry; // if 3 then 1 carry 1, not 0 carry 1
     if (val1[len - 1] == 0 && val2[len - 1] == 0){
       if (carry == 1){
@@ -35,7 +34,6 @@ function addition(){
       else{
         outList.unshift(0);
         carry = 0;
-        console.log("o0, c0");
     }
     }
     else if ((val1[len - 1] == 1 && val2[len - 1] == 0) ||
@@ -47,7 +45,6 @@ function addition(){
       else{
         outList.unshift(1);
         carry = 0;
-        console.log("o1, c0")
       }
       }
     else if (val1[len - 1] == 1 && val2[len - 1] == 1){
@@ -58,14 +55,11 @@ function addition(){
       else {
       outList.unshift(0);
       carry = 1;
-      console.log("o0, c1");
     }
     }
 
     len--;
-    console.log(JSON.stringify(len));
     if (carry == 1 && len == 0){
-      console.log("len is 0, but there is another carry")
       // outList.unshift(1);
       changeFlag([3, 1]); // Set carry flag
     }
@@ -73,7 +67,6 @@ function addition(){
       changeFlag([3, 0]);
     }
     reporting("Added");
-    console.log(JSON.stringify(outList));
     }
     if (outList[0] != val1[0] && outList[0] !=val2[0]){ // This may or may not work // Overflow is only for signed operations
       changeFlag([2, 1]); // Set overflow flag

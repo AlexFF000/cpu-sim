@@ -42,3 +42,14 @@ function tString(arry){
   console.log("Returning number")
   return arry;
 }
+
+function strToBin(str){
+  str = Number(str).toString(2);
+  var tmp = (8 - str.length);
+  var prestr = "";
+  for (var i = 0; i < tmp; i++){
+    prestr = prestr + "0";
+  }
+  str = prestr.concat(str);
+  return str;
+}

@@ -264,6 +264,7 @@ function end(){
   queue = [];
   subqueue = [];
   clearInterval(ticks);
+  endProgram();
   reporting("Finishing program");
 }
 
