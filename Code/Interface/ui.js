@@ -92,7 +92,7 @@ else { // prepare machine code instructions
     // Input validation
     if (parseInt(usrInput.slice(0, 4), 2) > 14){badInput(usrInput.slice(0, 4));} // Validate opcode
     else if (parseInt(usrInput.slice(4, 6), 2) > 1){badInput(usrInput.slice(4, 6));} // Validate mode
-    else if (parseInt(usrInput.slice(6, 14), 2) > 1){badInput(usrInput.slice(6, 14));} // Validate operand
+    else if (parseInt(usrInput.slice(6, 14), 2) > 255){badInput(usrInput.slice(6, 14));} // Validate operand
     // prepare instuctions
     var commandStr = usrInput.slice(0, 14);
     var command = [];
