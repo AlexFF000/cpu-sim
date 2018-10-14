@@ -5,7 +5,7 @@ var MDR;
 var ACC;
 var STATUS;
 var cirarray = [];
-function initReg(){
+function initReg(){ // Initialise register arrays
   PC = [0,0,0,0,0,0,0,0];
   CIR = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   MAR = [0,0,0,0,0,0,0,0];
@@ -18,28 +18,29 @@ function initReg(){
           ];
 }
 
-function update(register){
+function update(register){ // Put contents of DATABUS into given array
   for (var i = 0; i < 8; i++){ // Deep copy values
     register[i] = parseInt(DATABUS[i], 2);
   }
 }
 
-function cirUpdate(part){
-
+function cirUpdate(part){ // Update CIR to contain instruction ready to be decoded
+ // Due to 14 bit instructions, but only 8 bit word size- instructions are stored in two consecutive memory addresses
+ // The cir is updated in two parts, from two addresses
   if (part == 1){
     cirarray = [];
-    updateBus(cirarray, DATABUS)
+    updateBus(cirarray, DATABUS); // Put first half of instruction into CIR array
     // cirarray = DATABUS;
   }
   else if (part == 2){
-       // Push last 6 bits from DB to cirarray // Here is the culprit!!! Databus is just a reference to MDR
-    cirarray = cirarray.concat(DATABUS.slice(2, 8));
-    CIR = cirarray; // MDR gets updated as well (nvm it gets updated before this)
+       // Push last 6 bits from DB to cirarray
+    cirarray = cirarray.concat(DATABUS.slice(2, 8)); // First two bits of part 2 are meaningless zeros because instruction is 14 bit. These bits are discarded and the remaining 6 added to end of cir array
+    CIR = cirarray; // Contents of cir array placed in CIR
   }
 }
 
-function statusUpdate(){
-  var flag = CONTROLBUS.flags[0];
+function statusUpdate(){ // Update status register from flags register
+  var flag = CONTROLBUS.flags[0]; // First flag line indicates which flag is to be updated, second line indicated what it is changed to
   if (CONTROLBUS.flags[1] == 0){
     STATUS[flag] = 0;
   }
@@ -48,14 +49,14 @@ function statusUpdate(){
   }
   }
 
-function increment(reg){
+function increment(reg){ // Update PC or MAR ready for next instruction
   if (reg == PC){
     var val1 = PC;
-    var val2 = [0,0,0,0,0,0,1,0];
+    var val2 = [0,0,0,0,0,0,1,0]; // Add two to PC (not 1 becuase each instuction takes 2 addresses)
   }
   else if (reg == MAR){
     var val1 = MAR;
-    var val2 = [0,0,0,0,0,0,0,1];
+    var val2 = [0,0,0,0,0,0,0,1]; // Update MAR by 1 to get part two of instuction
   }
   var outList = [];
   var carry = 0;
@@ -85,7 +86,7 @@ function increment(reg){
       outList.unshift(1);
     }
     }
-    if (reg == PC){
+    if (reg == PC){ // Update registers to new value
       PC = outList;
   }
     else if (reg == MAR){

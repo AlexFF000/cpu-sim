@@ -1,6 +1,6 @@
-var memUi, paused, inputType;
+var memUi, paused, inputType, showDecimal, decimalTC;
 var input_box, program_counter, memaddr_reg, memdat_reg, acc_reg, currinst_reg, pause_but, start_but;
-var addr_bus, dat_bus, mem_table, stat_table, output_field, info_field, inst_conv, conv_opc, conv_mode, conv_opr, conv_out;
+var addr_bus, dat_bus, mem_table, stat_table, output_field, info_field, inst_conv, conv_opc, conv_mode, conv_opr, conv_out, show_dec, show_neg;
 
 var allowedInstructions;
 function getOutputs(){
@@ -26,9 +26,11 @@ function getOutputs(){
   conv_mode = "pickMode"; // Addressing mode box for creating Instructions
   conv_opr = "pickOper"; // Operand box for creating Instructions
   conv_out = "convertBox"; // Output box for creating Instructions
+  show_dec = "showInt"; // Checkbox asking user whether to display numbers in decimal
+  show_neg = "showTwoC"; // Chekbox asking whether to use twos complement to represent decimal numbers as negative
 }
 function start(){
-  function assToBin(word){
+  function assToBin(word){ // Convert assembly instructions to machine code
     word = word.toLowerCase();
     var opc = word.slice(0, 3);
     var mode = word.slice(3, 4);
@@ -56,7 +58,7 @@ function start(){
       badInput(mode)
     }
     // Convert operand
-    if (Number(opr) < 255){
+    if (Number(opr) < 256){
       opr = strToBin(opr);
     }
     else {
@@ -104,9 +106,10 @@ else { // prepare machine code instructions
     usrInput = usrInput.substr(14);
   }
 }
+  // Disable start button so program is not interrupted, and enable pause button
   document.getElementById(start_but).disabled = true;
   document.getElementById(pause_but).disabled = false;
-  control(instructions, speed);
+  control(instructions, speed); // Start the processor and send instructions to CU
 }
 
 function badInput(word){ // Input has failed validation
@@ -115,7 +118,7 @@ function badInput(word){ // Input has failed validation
 }
 
 function formatEntry(type){
-  allowedInstructions = [
+  allowedInstructions = [ // List of instuctions with machine code representation, used to velidate and convert assembly to machine code
     ["0000", "add"], ["0001", "sub"], ["0010", "and"], ["0011", "bor"], ["0100", "xor"], ["0101", "not"],
     ["0110", "red"], ["0111", "wrt"], ["1000", "gto"], ["1001", "biz"], ["1010", "bin"], ["1011", "bio"],
     ["1100", "bic"], ["1101", "out"], ["1110", "end"]
@@ -137,25 +140,25 @@ function formatEntry(type){
 }
 
 function uiUpdate(){
-  document.getElementById(program_counter).value = PC.join("");
-  document.getElementById(memaddr_reg).value = MAR.join("");
-  document.getElementById(memdat_reg).value = MDR.join("");
-  document.getElementById(acc_reg).value = ACC.join("");
+  document.getElementById(program_counter).value = numDisplay(PC.join(""));
+  document.getElementById(memaddr_reg).value = numDisplay(MAR.join(""));
+  document.getElementById(memdat_reg).value = numDisplay(MDR.join(""));
+  document.getElementById(acc_reg).value = numDisplay(ACC.join(""));
   document.getElementById(currinst_reg).value = CIR.join("");
-  document.getElementById(addr_bus).value = ADDRESSBUS.join("");
-  document.getElementById(dat_bus).value = DATABUS.join("");
+  document.getElementById(addr_bus).value = numDisplay(ADDRESSBUS.join(""));
+  document.getElementById(dat_bus).value = numDisplay(DATABUS.join(""));
   statUIUpdate();
   busUIUpdate();
 }
 
-function memUpdate(addr){
+function memUpdate(addr){ // Update an address in the memory table
   let row = parseInt(addr / 16);
   let col = addr % 16;
   let table = memUi[row].cells;
-  table[col].innerHTML = RAM[addr].join("");
+  table[col].innerHTML = numDisplay(RAM[addr].join(""));
 }
 
-function statUIUpdate(){
+function statUIUpdate(){ // Update status bus table
   let tab = document.getElementById(stat_table).rows;
   let row = tab[0].cells;
   row[1].innerHTML = STATUS[0];
@@ -167,7 +170,7 @@ function statUIUpdate(){
   row[1].innerHTML = STATUS[3];
 }
 
-function cBusUpdate(){
+function cBusUpdate(){ // Update control bus UI
   var uiCBus = document.getElementById(cont_bus).children;
   if (CONTROLBUS.clock == 1){
     uiCBus[0].style.backgroundColor = "blue";
@@ -189,7 +192,7 @@ function cBusUpdate(){
   else{uiCBus[6].style.backgroundColor = "grey";}
 }
 
-function busUIUpdate(){
+function busUIUpdate(){ // Update address and data bus UIs
   var uiDBus = document.getElementById(dat_bus).children;
   var uiABus = document.getElementById(addr_bus).children;
 
@@ -212,11 +215,11 @@ function busUIUpdate(){
 }
 
 
-function outputToUser(){
-  document.getElementById(output_field).value = DATABUS.join("");
+function outputToUser(){ // Place databus contents in output field
+  document.getElementById(output_field).value = numDisplay(DATABUS.join(""));
 }
 
-function playPause(){
+function playPause(){ // Allow user to pause and resume CPU while it is running
   if (paused != true){
     document.getElementById(pause_but).value = "Resume";
     pause();
@@ -227,7 +230,7 @@ function playPause(){
   }
 }
 
-function convert(){
+function convert(){ // Machine code creator
   getOutputs();
   let convert_Opcode = document.getElementById(conv_opc).value;
   let convert_Mode = document.getElementById(conv_mode).value;
@@ -242,7 +245,59 @@ function convert(){
   document.getElementById(conv_out).value = convert_Combine;
 }
 
-function strToBin(str){
+function convertDisplay(){
+  getOutputs();
+  if (document.getElementById(show_dec).checked == true){
+    showDecimal = true;
+    document.getElementById(show_neg).disabled = false;
+  }
+  else{
+    showDecimal = false;
+    document.getElementById(show_neg).disabled = true;
+  }
+  if (document.getElementById(show_neg).checked == true){
+    decimalTC = true; // Negative two's complement numbers will be shown as negative
+  }
+  else{
+    decimalTC = false;
+  }
+}
+
+function numDisplay(num){ // Convert number (if necessary) to decimal
+  function negateNum(tmp){
+    var outnum = "";
+    for (var i = 0; i < 7; i++){
+      if (tmp[i] == 0){
+        outnum = outnum + "1";
+      }
+      else{
+        outnum = outnum + "0";
+      }
+    }
+    return outnum;
+  }
+  if (showDecimal){
+    if (decimalTC){
+      if (num[0] == 1){
+        num = num.substr(1);
+        num = negateNum(num);
+        num = parseInt(num, 2);
+        num = num + 1;
+        num = "-" + num;
+      }
+      else{
+        num = parseInt(num, 2);
+      }
+    }
+    else {
+    num = parseInt(num, 2);
+  }
+  }
+
+  return num;
+}
+
+function strToBin(str){ // Turn decimal instruction into 8 bit binary string
   str = Number(str).toString(2);
   var tmp = (8 - str.length);
   var prestr = "";

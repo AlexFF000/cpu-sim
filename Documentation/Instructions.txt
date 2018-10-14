@@ -1,0 +1,97 @@
+This is a simulated 8 bit processor, written in JavaScript with an HTML user interface page
+The project was tested throughout development in Mozilla Firefox (Developer Edition), although the final version has also been tested in Google Chrome and Microsoft Edge.
+
+The application is not based on any particular processor or instruction set, but is intended as very basic demonstration of a Von Neumann processor.
+It has three buses, six registers, and 15 instructions, which can be entered either as machine code or assembly.
+Please note that this is not a perfect simulation of processor hardware; certain high level language features (such as if/else, iteration, number conversion and arithmetic / logical operators) have been used for the sake of code simplicity, however each instruction is performed in way that represents how it would be done by a real processor
+------------------------------------------------------------------------------------------------------------------------
+Usage:
+
+The UI (by default located at /Code/Interface/ui.html) is used to interact with the CPU through a web browser, the UI page can be replaced with little modification to the scripts.
+Instructions are written into the large text box at the top of the page.
+Before entering any instructions the user must specify whether instructions will be given as assembly or machine code.
+
+Assembly Code:
+If instructions are entered as assembly code, values must be represented in 3 digit decimal (eg. 002).
+Assembly instructions must be entered in the following format:
+Three character opcode, addressing mode, three digit operand
+For example: ADD D 001 (this would add 1 to the accumulator)
+Note: All assembly instructions must be entered in this format, even for commands which do not use operands such as NOT and END.
+
+Machine Code:
+Machine code instructions are represented as 14 bit binary in the following format:
+First 4 bits = opcode, 2 bit addressing mode, last 8 bits = operand
+For example: 0000 00 0000 0001 (this would add 1 to the accumulator)
+Note: All instructions must be entered in this format, even for commands which do not require operands, as the processor expects 14 bit instructions
+
+When entering machine code instructions, the page will display a form allowing users to easily create 14 bit instructions which can be copied into the instructions box.
+
+The Instruction Set:
+The processor supports the following opcodes:
+
+Opcode        |Description                                                                        |Assembly mnemonic |Machine Code
+Addition:     Add specified data to the value in the accumulator                                   ADD                0000
+Subtract:     Subtract specified data from value in the accumulator                                SUB                0001
+Bitwise and:  Perform a bitwise AND operation on the specified data and value in the accumulator   AND                0010
+Bitwise or:   Perform a bitwise OR operation on the specified data and value in the accumulator    BOR                0011
+Bitwise XOR:  Perform a bitwise XOR operation on the specified data and value in the accumulator   XOR                0100
+Bitwise Not:  Perform a bitwise NOT operation on the value in the accumulator                      NOT                0101
+Read:         Place data from given memory address into the accumulator                            RED                0110
+Write:        Place data from accumulator into given memory address                                WRT                0111
+Jump to:      Place given memory address in PC so that it's instruction will be run next           GTO                1000
+Branch if zero: Same as jump to, but will only jump if zero flag is set in status register         BIZ                1001
+Branch if negative: Same as jump to, but will only jump if negative flag is set in status register BIN                1010
+Branch if overflow: Same as jump to, but will only jump if overflow flag is set in status register BIO                1011
+Branch if carry: Same as jump to, but will only jump if carry flag is set in status register       BIC                1100
+Output:       If addressing mode = data, output value in accumulator if mode = address output data at given address OUT  1101
+End:          Finish the program, if this command is not given the CPU will continue aimlessly until memory is full, causing an error.  END 1110
+
+Addressing modes:
+Data: The operand given is the data to be used in the instruction (Assembly: D / Machine code: 00)
+Address: The operand given is the memory address of the data to be used in the instruction (Assembly: A / Machine Code: 01)
+
+The processor has 8 bit memory locations, 8 bit buses and 8 bit registers (except CIR), however instructions are 14 bit. The processor stores each instruction in two parts, in two memory locations.
+When using branch/jump instructions remember to specify the first part of an instruction and that each instruction takes up two addresses.
+
+Instructions can be entered with spaces and line breaks and assembly code can be in upper or lower case.
+The user must enter a clock speed between 0 and 100 hertz (cycles per second), if no speed or an invalid speed is entered then the clock will run at 100hz.
+When instructions have been entered the user must press start to begin the program, the pause button can then be pressed at any time to freeze the CPU, and then resume it.
+
+The UI gives the option to display values in denary form, if this is chosen the user can also choose for twos complement to be used to display values over 127 as negative
+------------------------------------------------------------------------------------------------------------------------
+
+Registers:
+
+The CPU has a:
+Program Counter (PC) for holding the address of the next instruction
+Current Instruction Register (CIR) for holding the current instruction
+Memory Address Register (MAR) for holding addresses of data to be fetched from memory
+Memory Data Register (MDR) for holding data to be used in the current instruction
+Accumulator (ACC) for holding the result of the previous instruction
+Status register:
+This is modified to hold certain data about mathematical or logic instructions
+Zero flag: Set by the ALU if the result of a logical/mathematical operation was zero
+Negative flag:  Set by the ALU if the result of a logical/mathematical operation starts with 1, if using twos complement this indicates a negative number
+Overflow flag:  Set by the ALU if the result of a logical/mathematical operation starts with a different number to both inputs, in twos complement this indicates an overflow error and that the result is wrong
+Carry flag: Set by the ALU if the result of a logical/mathematical operation was too large to fit into 8 bits
+
+These flags can be used with branch instructions to create if statements.
+The carry flag could also be used with branch instructions to allow mathematical operations on values with more than 8 bits.
+
+Other components:
+
+Control Unit (CU)- Fetches, decodes and controls the execution of instructions by co-ordinating other components.
+Arithmetic Logic Unit- Performs mathematical and logical operations on data when ordered to do so by CU.
+Buses:
+Control Bus- Used by the CU to control the rest of the system, consists of 10 lines:
+- Data request: Turned on by components to request the use of the data bus, this prevents multiple components using the bus at once
+- Data bus grant:  Turned on by the CU to grant use of the data bus after a component has used the data request line
+- Write: Turned on by the CU to signal the memory unit to store the data in the Data bus at the address in the address bus
+- Read: Turned on by the CU to signal the memory unit to place the data from the address in the address bus on the data bus
+- Clock: Pulses on and off at a speed defined by user, one operation is performed each pulse (each instruction is made up of a number of operations, so takes multiple pulses to complete)
+- Flag lines 1-4: Specifies a flag in the status register to be updated
+- Flag line 5: Specifies what the flag should be changed to.
+
+Memory Unit:
+
+Consists of 256 8 bit memory locations.

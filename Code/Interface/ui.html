@@ -39,6 +39,8 @@
   </select>
   <select id="pickMode"><option value="00">Data</option><option value="01">Address</option></select><input id="pickOper" type="text" maxlength="5" /><input id="convertToMCode" type="button" value="Convert" onclick="convert()" /> <input id="convertBox" type="text" readonly="true" />
   </div>
+  <div id="chooseDisplay"><input type="checkbox" id="showInt" onclick="convertDisplay()">Dislay values in decimal format</input>
+  <br><input type="checkbox" id="showTwoC" disabled="true" onclick="convertDisplay()">Consider two's complement</input></div>
 
   <p>Output</p>
   <input id="reportBox" type="text" readonly="true" />
@@ -110,12 +112,19 @@
 </div>
 <h>Control Bus</h>
 <div class="control_bus" id="controlBox">
+  clock
   <div value="clock" class="busline"></div>
+  request
   <div value="databus request"class="busline"></div>
+  grant
   <div  value="databus grant" class="busline"></div>
+  write
   <div  value="write" class="busline"></div>
+  read
   <div  value="read" class="busline"></div>
+  status
   <div  value="status flag position" class="busline"></div>
+  status
   <div  value="status flag value" class="busline"></div>
 </div>
 
@@ -479,7 +488,7 @@
     <td>Goto</td>
     <td>GTO</td>
     <td>1000</td>
-    <td>Change address in program counter to operand, the instruction at address will be run next </td>
+    <td>Change address in program counter to operand, the instruction at address will be run next (note: As instructions are 14 bit but memory spaces are 8 bit, each instruction is stored in two parts, when using goto, give address of part one of desired instruction e.g. to goto third instuction address will be 4) </td>
   </tr>
   <tr>
     <td>Branch if zero </td>
@@ -569,7 +578,7 @@
     z-index: 1;
     position: relative;
     border: solid orange 5px;
-    width: 100px;
+    width: 800px;
     height: 100px;
     margin: 10px;
   }
